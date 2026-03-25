@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { Creator } from '@/lib/creators-data';
 import { ArrowRight, Linkedin, Twitter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { buildOptimizationProps, buildSizes } from '@/lib/image-utils';
 
 interface CreatorCardProps {
   creator: Creator;
@@ -11,6 +13,12 @@ interface CreatorCardProps {
 
 export function CreatorCard({ creator }: CreatorCardProps) {
   const router = useRouter();
+  const coverSizes = buildSizes({
+    mobile: '100vw',
+    tablet: '50vw',
+    desktop: '33vw',
+    largeDesktop: '33vw',
+  });
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Don't navigate if clicking on anchors or buttons
@@ -28,10 +36,14 @@ export function CreatorCard({ creator }: CreatorCardProps) {
       {/* Cover Image */}
       <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 overflow-hidden relative">
         {creator.coverImage && (
-          <img
+          <Image
             src={creator.coverImage}
-            alt={creator.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            alt={`${creator.name} cover image`}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            {...buildOptimizationProps({ sizes: coverSizes })}
+            sizes={coverSizes}
+            placeholder="empty"
           />
         )}
       </div>

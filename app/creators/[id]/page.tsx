@@ -8,6 +8,8 @@ import { ProjectCard } from '@/components/project-card';
 import { Button } from '@/components/ui/button';
 import { creators } from '@/lib/creators-data';
 import { ArrowLeft, Linkedin, Twitter, ExternalLink } from 'lucide-react';
+import Image from 'next/image';
+import { buildOptimizationProps, buildSizes } from '@/lib/image-utils';
 
 interface CreatorProfilePageProps {
   params: {
@@ -18,6 +20,12 @@ interface CreatorProfilePageProps {
 export default function CreatorProfilePage({ params }: CreatorProfilePageProps) {
   const router = useRouter();
   const creator = creators.find((c) => c.id === params.id);
+  const heroSizes = buildSizes({
+    mobile: '100vw',
+    tablet: '100vw',
+    desktop: '100vw',
+    largeDesktop: '100vw',
+  });
 
   if (!creator) {
     notFound();
@@ -31,10 +39,14 @@ export default function CreatorProfilePage({ params }: CreatorProfilePageProps) 
         {/* Hero Section with Cover */}
         <section className="relative h-64 sm:h-80 bg-gradient-to-br from-primary/20 to-accent/20 overflow-hidden">
           {creator.coverImage && (
-            <img
+            <Image
               src={creator.coverImage}
-              alt={creator.name}
-              className="w-full h-full object-cover"
+              alt={`${creator.name} cover image`}
+              fill
+              className="object-cover"
+              {...buildOptimizationProps({ priority: true, sizes: heroSizes })}
+              sizes={heroSizes}
+              placeholder="empty"
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
