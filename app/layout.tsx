@@ -3,6 +3,7 @@ import Script from 'next/script'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from 'next-themes'
+import { SessionProvider } from '@/components/providers/session-provider'
 import { Toaster } from '@/components/ui/sonner'
 import AnalyticsClient from './providers/AnalyticsClient'
 import './globals.css'
@@ -63,6 +64,12 @@ export default function RootLayout({
         <PlausibleScript />
       </head>
       <body className="font-sans antialiased">
+        <SessionProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+            <Analytics />
+          </ThemeProvider>
+        </SessionProvider>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AnalyticsClient plausibleDomain={PLAUSIBLE_DOMAIN} />
           {children}
