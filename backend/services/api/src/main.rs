@@ -1,3 +1,5 @@
+mod upload;
+
 use actix_cors::Cors;
 use actix_web::{http::StatusCode, middleware, web, App, HttpResponse, HttpServer};
 use deadpool_redis::{redis::AsyncCommands, Config, Pool, Runtime};
@@ -805,6 +807,11 @@ async fn main() -> std::io::Result<()> {
     let cfg = Config::from_url(redis_url);
     let redis_pool = cfg.create_pool(Some(Runtime::Tokio1)).expect("Failed to create Redis pool");
 
+    // ── File Upload Config ─────────────────────────────────────────────
+    let upload_config = upload::UploadConfig::from_env();
+    tracing::info!("Upload storage: {}", upload_config.upload_dir.display());
+    upload::ensure_uploads_table(&db_pool).await;
+
     tracing::info!("Starting Stellar API on {}:{}", host, port);
     tracing::info!(
         "Swagger UI available at http://{}:{}/swagger-ui/",
@@ -816,6 +823,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(db_pool.clone()))
             .app_data(web::Data::new(redis_pool.clone()))
+            .app_data(web::Data::new(upload_config.clone()))
             .wrap(Cors::permissive())
             .wrap(middleware::Logger::default())
             .wrap(middleware::NormalizePath::trim())
@@ -835,6 +843,13 @@ async fn main() -> std::io::Result<()> {
             .route("/api/freelancers/{address}", web::get().to(get_freelancer))
             .route("/api/escrow/{id}", web::get().to(get_escrow))
             .route("/api/escrow/{id}/release", web::post().to(release_escrow))
+            // ── File upload routes ───────────────────────────────────────
+            .route("/api/upload/avatar", web::post().to(upload::upload_avatar))
+            .route("/api/upload/project-image", web::post().to(upload::upload_project_image))
+            .route("/api/upload/bounty-attachment", web::post().to(upload::upload_bounty_attachment))
+            .route("/api/uploads", web::get().to(upload::list_uploads))
+            .route("/api/uploads/{category}/{filename}", web::get().to(upload::serve_upload))
+            .route("/api/uploads/{id}", web::delete().to(upload::delete_upload))
     })
     .bind((host.as_str(), port))?
     .run()
