@@ -1,10 +1,9 @@
 use actix_cors::Cors;
 use actix_web::{middleware, web, App, HttpResponse, HttpServer};
-use deadpool_redis::{redis::AsyncCommands, Config, Pool, Runtime};
+use deadpool_redis::{redis::AsyncCommands, Config as RedisConfig, Pool as RedisPool, Runtime};
 use serde::{Deserialize, Serialize};
-use tracing_subscriber;
-#[derive(Clone, Serialize, Deserialize, Debug)]
-use utoipa::{OpenApi, ToSchema};
+use sqlx::{PgPool, Row};
+use utoipa::{IntoParams, OpenApi, ToSchema};
 use utoipa_swagger_ui::SwaggerUi;
 
 // ── Request / Response types ─────────────────────────────────────────────────
@@ -37,6 +36,28 @@ pub struct FreelancerRegistration {
     pub name: String,
     pub discipline: String,
     pub bio: String,
+}
+
+#[derive(Clone, Serialize, Deserialize, Debug, ToSchema, IntoParams)]
+pub struct PaginationParams {
+    /// Page number (starts at 1)
+    pub page: Option<u32>,
+    /// Number of items per page (default 10, max 100)
+    pub limit: Option<u32>,
+}
+
+impl PaginationParams {
+    pub fn page(&self) -> u32 {
+        self.page.unwrap_or(1).max(1)
+    }
+
+    pub fn limit(&self) -> u32 {
+        self.limit.unwrap_or(10).min(100)
+    }
+
+    pub fn offset(&self) -> i64 {
+        ((self.page() - 1) * self.limit()) as i64
+    }
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug, ToSchema)]
@@ -104,18 +125,77 @@ async fn create_bounty(body: web::Json<BountyRequest>) -> HttpResponse {
 #[utoipa::path(
     get, path = "/api/bounties",
     params(
-        ("page" = Option<u32>, Query, description = "Page number (default 1)"),
-        ("limit" = Option<u32>, Query, description = "Items per page (default 10)"),
+        PaginationParams,
         ("status" = Option<String>, Query, description = "Filter by status: open | in-progress | completed"),
     ),
     responses((status = 200, description = "Paginated list of bounties"))
 )]
-async fn list_bounties() -> HttpResponse {
-    let response: ApiResponse<serde_json::Value> = ApiResponse::ok(
-        serde_json::json!({ "bounties": [], "total": 0, "page": 1, "limit": 10 }),
-        None,
-    );
-    HttpResponse::Ok().json(response)
+async fn list_bounties(
+    pagination: web::Query<PaginationParams>,
+    filter: web::Query<std::collections::HashMap<String, String>>,
+    db: web::Data<PgPool>,
+) -> HttpResponse {
+    let limit = pagination.limit();
+    let offset = pagination.offset();
+    let status = filter.get("status").cloned();
+
+    let (bounties_result, total_result) = if let Some(s) = status {
+        let rows = sqlx::query(
+            "SELECT chain_id, title, budget, status FROM chain_bounties WHERE status = $1 ORDER BY updated_at DESC LIMIT $2 OFFSET $3"
+        )
+        .bind(s.to_uppercase()) // Matching indexer's OPEN/IN_PROGRESS/etc.
+        .bind(limit as i64)
+        .bind(offset)
+        .fetch_all(db.get_ref())
+        .await;
+
+        let total = sqlx::query("SELECT COUNT(*) FROM chain_bounties WHERE status = $1")
+            .bind(s.to_uppercase())
+            .fetch_one(db.get_ref())
+            .await;
+        
+        (rows, total)
+    } else {
+        let rows = sqlx::query(
+            "SELECT chain_id, title, budget, status FROM chain_bounties ORDER BY updated_at DESC LIMIT $1 OFFSET $2"
+        )
+        .bind(limit as i64)
+        .bind(offset)
+        .fetch_all(db.get_ref())
+        .await;
+
+        let total = sqlx::query("SELECT COUNT(*) FROM chain_bounties")
+            .fetch_one(db.get_ref())
+            .await;
+
+        (rows, total)
+    };
+
+    match (bounties_result, total_result) {
+        (Ok(rows), Ok(total_row)) => {
+            let total: i64 = total_row.get(0);
+            let bounties: Vec<serde_json::Value> = rows.into_iter().map(|r| {
+                serde_json::json!({
+                    "id": r.get::<i64, _>("chain_id"),
+                    "title": r.get::<String, _>("title"),
+                    "budget": r.get::<i64, _>("budget"),
+                    "status": r.get::<String, _>("status")
+                })
+            }).collect();
+
+            let response: ApiResponse<serde_json::Value> = ApiResponse::ok(
+                serde_json::json!({
+                    "bounties": bounties,
+                    "total": total,
+                    "page": pagination.page(),
+                    "limit": limit
+                }),
+                None,
+            );
+            HttpResponse::Ok().json(response)
+        }
+        _ => HttpResponse::InternalServerError().json(serde_json::json!({ "error": "Database error" }))
+    }
 }
 
 /// Get a single bounty by ID
@@ -127,7 +207,7 @@ async fn list_bounties() -> HttpResponse {
         (status = 404, description = "Bounty not found"),
     )
 )]
-async fn get_bounty(path: web::Path<u64>) -> HttpResponse {
+async fn get_bounty(path: web::Path<u64>, redis: web::Data<RedisPool>) -> HttpResponse {
     let bounty_id = path.into_inner();
     let cache_key = format!("api:bounty:{}", bounty_id);
 
@@ -198,22 +278,76 @@ async fn register_freelancer(body: web::Json<FreelancerRegistration>) -> HttpRes
 #[utoipa::path(
     get, path = "/api/freelancers",
     params(
+        PaginationParams,
         ("discipline" = Option<String>, Query, description = "Filter by discipline"),
-        ("page" = Option<u32>, Query, description = "Page number"),
-        ("limit" = Option<u32>, Query, description = "Items per page"),
     ),
     responses((status = 200, description = "Paginated list of freelancers"))
 )]
 async fn list_freelancers(
-    query: web::Query<std::collections::HashMap<String, String>>,
-    redis: web::Data<Pool>,
+    params: web::Query<PaginationParams>,
+    filter: web::Query<std::collections::HashMap<String, String>>,
+    db: web::Data<PgPool>,
 ) -> HttpResponse {
-    let discipline = query.get("discipline").cloned().unwrap_or_default();
-    let response: ApiResponse<serde_json::Value> = ApiResponse::ok(
-        serde_json::json!({ "freelancers": [], "total": 0, "filters": { "discipline": discipline } }),
-        None,
-    );
-    HttpResponse::Ok().json(response)
+    let limit = params.limit();
+    let offset = params.offset();
+    let discipline = filter.get("discipline").cloned();
+
+    let (rows_result, total_result) = if let Some(d) = discipline {
+        let rows = sqlx::query(
+            "SELECT address, discipline, verified FROM chain_freelancers WHERE discipline = $1 ORDER BY updated_at DESC LIMIT $2 OFFSET $3"
+        )
+        .bind(d.clone())
+        .bind(limit as i64)
+        .bind(offset)
+        .fetch_all(db.get_ref())
+        .await;
+
+        let total = sqlx::query("SELECT COUNT(*) FROM chain_freelancers WHERE discipline = $1")
+            .bind(d)
+            .fetch_one(db.get_ref())
+            .await;
+        
+        (rows, total)
+    } else {
+        let rows = sqlx::query(
+            "SELECT address, discipline, verified FROM chain_freelancers ORDER BY updated_at DESC LIMIT $1 OFFSET $2"
+        )
+        .bind(limit as i64)
+        .bind(offset)
+        .fetch_all(db.get_ref())
+        .await;
+
+        let total = sqlx::query("SELECT COUNT(*) FROM chain_freelancers")
+            .fetch_one(db.get_ref())
+            .await;
+
+        (rows, total)
+    };
+
+    match (rows_result, total_result) {
+        (Ok(rows), Ok(total_row)) => {
+            let total: i64 = total_row.get(0);
+            let freelancers: Vec<serde_json::Value> = rows.into_iter().map(|r| {
+                serde_json::json!({
+                    "address": r.get::<String, _>("address"),
+                    "discipline": r.get::<String, _>("discipline"),
+                    "verified": r.get::<bool, _>("verified")
+                })
+            }).collect();
+
+            let response: ApiResponse<serde_json::Value> = ApiResponse::ok(
+                serde_json::json!({
+                    "freelancers": freelancers,
+                    "total": total,
+                    "page": params.page(),
+                    "limit": limit
+                }),
+                None,
+            );
+            HttpResponse::Ok().json(response)
+        }
+        _ => HttpResponse::InternalServerError().json(serde_json::json!({ "error": "Database error" }))
+    }
 }
 
 /// Get a freelancer by Stellar address
@@ -225,7 +359,7 @@ async fn list_freelancers(
         (status = 404, description = "Freelancer not found"),
     )
 )]
-async fn get_freelancer(path: web::Path<String>) -> HttpResponse {
+async fn get_freelancer(path: web::Path<String>, redis: web::Data<RedisPool>) -> HttpResponse {
     let address = path.into_inner();
     let cache_key = format!("api:freelancer:{}", address);
 
@@ -341,8 +475,11 @@ async fn main() -> std::io::Result<()> {
     let host = std::env::var("API_HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
 
     let redis_url = std::env::var("REDIS_URL").unwrap_or_else(|_| "redis://127.0.0.1:6379".to_string());
-    let cfg = Config::from_url(redis_url);
+    let cfg = RedisConfig::from_url(redis_url);
     let redis_pool = cfg.create_pool(Some(Runtime::Tokio1)).expect("Failed to create Redis pool");
+
+    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let db_pool = PgPool::connect(&database_url).await.expect("Failed to connect to PostgreSQL");
 
     tracing::info!("Starting Stellar API on {}:{}", host, port);
     tracing::info!("Swagger UI available at http://{}:{}/swagger-ui/", host, port);
@@ -352,6 +489,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(redis_pool.clone()))
+            .app_data(web::Data::new(db_pool.clone()))
             .wrap(middleware::Logger::default())
             .wrap(middleware::NormalizePath::trim())
             // Swagger UI at /swagger-ui/
