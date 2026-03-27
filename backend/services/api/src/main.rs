@@ -843,6 +843,13 @@ async fn main() -> std::io::Result<()> {
             .route("/api/freelancers/{address}", web::get().to(get_freelancer))
             .route("/api/escrow/{id}", web::get().to(get_escrow))
             .route("/api/escrow/{id}/release", web::post().to(release_escrow))
+            // ── File upload routes ───────────────────────────────────────
+            .route("/api/upload/avatar", web::post().to(upload::upload_avatar))
+            .route("/api/upload/project-image", web::post().to(upload::upload_project_image))
+            .route("/api/upload/bounty-attachment", web::post().to(upload::upload_bounty_attachment))
+            .route("/api/uploads", web::get().to(upload::list_uploads))
+            .route("/api/uploads/{category}/{filename}", web::get().to(upload::serve_upload))
+            .route("/api/uploads/{id}", web::delete().to(upload::delete_upload))
     })
     .bind((host.as_str(), port))?
     .run()
