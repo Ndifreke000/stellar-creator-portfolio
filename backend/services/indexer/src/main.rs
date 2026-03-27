@@ -30,16 +30,12 @@ struct Config {
 impl Config {
     fn from_env() -> Result<Self> {
         Ok(Self {
-            database_url: std::env::var("DATABASE_URL")
-                .context("DATABASE_URL not set")?,
+            database_url: std::env::var("DATABASE_URL").context("DATABASE_URL not set")?,
             rpc_url: std::env::var("STELLAR_RPC_URL")
                 .unwrap_or_else(|_| "https://soroban-testnet.stellar.org".into()),
-            bounty_contract_id: std::env::var("BOUNTY_CONTRACT_ID")
-                .unwrap_or_default(),
-            freelancer_contract_id: std::env::var("FREELANCER_CONTRACT_ID")
-                .unwrap_or_default(),
-            escrow_contract_id: std::env::var("ESCROW_CONTRACT_ID")
-                .unwrap_or_default(),
+            bounty_contract_id: std::env::var("BOUNTY_CONTRACT_ID").unwrap_or_default(),
+            freelancer_contract_id: std::env::var("FREELANCER_CONTRACT_ID").unwrap_or_default(),
+            escrow_contract_id: std::env::var("ESCROW_CONTRACT_ID").unwrap_or_default(),
             ledger_chunk: std::env::var("INDEXER_LEDGER_CHUNK")
                 .ok()
                 .and_then(|v| v.parse().ok())
@@ -270,32 +266,26 @@ async fn handle_bounty_event(pool: &PgPool, event: &SorobanEvent, name: &str) ->
         }
         n if n.contains("selected") => {
             let bounty_id = value["bounty_id"].as_i64().unwrap_or(0);
-            sqlx::query(
-                "UPDATE chain_bounties SET status = 'IN_PROGRESS' WHERE chain_id = $1",
-            )
-            .bind(bounty_id)
-            .execute(pool)
-            .await?;
+            sqlx::query("UPDATE chain_bounties SET status = 'IN_PROGRESS' WHERE chain_id = $1")
+                .bind(bounty_id)
+                .execute(pool)
+                .await?;
             info!("Bounty {bounty_id} moved to IN_PROGRESS");
         }
         n if n.contains("completed") => {
             let bounty_id = value["bounty_id"].as_i64().unwrap_or(0);
-            sqlx::query(
-                "UPDATE chain_bounties SET status = 'COMPLETED' WHERE chain_id = $1",
-            )
-            .bind(bounty_id)
-            .execute(pool)
-            .await?;
+            sqlx::query("UPDATE chain_bounties SET status = 'COMPLETED' WHERE chain_id = $1")
+                .bind(bounty_id)
+                .execute(pool)
+                .await?;
             info!("Bounty {bounty_id} completed");
         }
         n if n.contains("cancelled") => {
             let bounty_id = value["bounty_id"].as_i64().unwrap_or(0);
-            sqlx::query(
-                "UPDATE chain_bounties SET status = 'CANCELLED' WHERE chain_id = $1",
-            )
-            .bind(bounty_id)
-            .execute(pool)
-            .await?;
+            sqlx::query("UPDATE chain_bounties SET status = 'CANCELLED' WHERE chain_id = $1")
+                .bind(bounty_id)
+                .execute(pool)
+                .await?;
             info!("Bounty {bounty_id} cancelled");
         }
         _ => {
@@ -328,12 +318,10 @@ async fn handle_freelancer_event(pool: &PgPool, event: &SorobanEvent, name: &str
         }
         n if n.contains("verified") => {
             let address = value["address"].as_str().unwrap_or("").to_string();
-            sqlx::query(
-                "UPDATE chain_freelancers SET verified = true WHERE address = $1",
-            )
-            .bind(&address)
-            .execute(pool)
-            .await?;
+            sqlx::query("UPDATE chain_freelancers SET verified = true WHERE address = $1")
+                .bind(&address)
+                .execute(pool)
+                .await?;
             info!("Freelancer {address} verified");
         }
         _ => {
@@ -370,22 +358,18 @@ async fn handle_escrow_event(pool: &PgPool, event: &SorobanEvent, name: &str) ->
         }
         n if n.contains("released") => {
             let id = value["id"].as_i64().unwrap_or(0);
-            sqlx::query(
-                "UPDATE chain_escrows SET status = 'RELEASED' WHERE chain_id = $1",
-            )
-            .bind(id)
-            .execute(pool)
-            .await?;
+            sqlx::query("UPDATE chain_escrows SET status = 'RELEASED' WHERE chain_id = $1")
+                .bind(id)
+                .execute(pool)
+                .await?;
             info!("Escrow {id} released");
         }
         n if n.contains("refunded") => {
             let id = value["id"].as_i64().unwrap_or(0);
-            sqlx::query(
-                "UPDATE chain_escrows SET status = 'REFUNDED' WHERE chain_id = $1",
-            )
-            .bind(id)
-            .execute(pool)
-            .await?;
+            sqlx::query("UPDATE chain_escrows SET status = 'REFUNDED' WHERE chain_id = $1")
+                .bind(id)
+                .execute(pool)
+                .await?;
             info!("Escrow {id} refunded");
         }
         _ => {
@@ -485,8 +469,7 @@ async fn main() -> Result<()> {
 
     tracing_subscriber::fmt()
         .with_env_filter(
-            std::env::var("RUST_LOG")
-                .unwrap_or_else(|_| "info,stellar_indexer=debug".into()),
+            std::env::var("RUST_LOG").unwrap_or_else(|_| "info,stellar_indexer=debug".into()),
         )
         .init();
 
@@ -516,8 +499,10 @@ async fn main() -> Result<()> {
     .collect();
 
     if contract_ids.is_empty() {
-        warn!("No contract IDs configured — indexer will poll but skip processing. \
-               Set BOUNTY_CONTRACT_ID / FREELANCER_CONTRACT_ID / ESCROW_CONTRACT_ID.");
+        warn!(
+            "No contract IDs configured — indexer will poll but skip processing. \
+               Set BOUNTY_CONTRACT_ID / FREELANCER_CONTRACT_ID / ESCROW_CONTRACT_ID."
+        );
     }
 
     let mut cursor = load_cursor(&pool, "main").await?;
