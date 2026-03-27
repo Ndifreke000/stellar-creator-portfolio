@@ -1,4 +1,4 @@
-mod upload;
+mod metrics;
 
 use actix_cors::Cors;
 use actix_web::{http::StatusCode, middleware, web, App, HttpResponse, HttpServer};
@@ -807,10 +807,8 @@ async fn main() -> std::io::Result<()> {
     let cfg = Config::from_url(redis_url);
     let redis_pool = cfg.create_pool(Some(Runtime::Tokio1)).expect("Failed to create Redis pool");
 
-    // ── File Upload Config ─────────────────────────────────────────────
-    let upload_config = upload::UploadConfig::from_env();
-    tracing::info!("Upload storage: {}", upload_config.upload_dir.display());
-    upload::ensure_uploads_table(&db_pool).await;
+    let (prometheus, business_metrics) = metrics::setup_metrics();
+    let business_metrics = web::Data::new(business_metrics);
 
     tracing::info!("Starting Stellar API on {}:{}", host, port);
     tracing::info!(
@@ -818,12 +816,14 @@ async fn main() -> std::io::Result<()> {
         host,
         port
     );
+    tracing::info!("Prometheus metrics available at http://{}:{}/metrics", host, port);
 
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(db_pool.clone()))
             .app_data(web::Data::new(redis_pool.clone()))
-            .app_data(web::Data::new(upload_config.clone()))
+            .app_data(business_metrics.clone())
+            .wrap(prometheus.clone())
             .wrap(Cors::permissive())
             .wrap(middleware::Logger::default())
             .wrap(middleware::NormalizePath::trim())

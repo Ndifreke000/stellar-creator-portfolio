@@ -54,8 +54,9 @@ anyhow = "1.0"
 futures = "0.3"
 dotenvy = "0.15"
 
-# File upload
-actix-multipart = "0.7"
+# Metrics
+actix-web-prom = "0.9"
+prometheus = "0.13"
 
 # OpenAPI / Swagger
 utoipa = { version = "4", features = ["actix_extras"] }
