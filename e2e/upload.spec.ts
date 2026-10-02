@@ -1,7 +1,7 @@
 /**
  * Playwright E2E outline. Install Playwright and run:
- *   npx playwright install
- *   npx playwright test __tests__/upload.e2e.test.ts
+ *   pnpm exec playwright install
+ *   pnpm exec playwright test e2e/upload.spec.ts
  */
 import { expect, test } from '@playwright/test';
 
