@@ -4,6 +4,23 @@ import tsPlugin from '@typescript-eslint/eslint-plugin';
 
 /** @type {import('eslint').Linter.Config[]} */
 const eslintConfig = [
+  {
+    // Sub-projects with their own toolchains (and, for mobile, their own
+    // React Native lint rules), plus generated and vendored output.
+    ignores: [
+      'mobile/**',
+      'backend/**',
+      'contracts/**',
+      'load-tests/**',
+      'infrastructure/**',
+      'helm/**',
+      'public/**',
+      'coverage/**',
+      'playwright-report/**',
+      'test-results/**',
+      'next-env.d.ts',
+    ],
+  },
   ...nextConfig,
   {
     files: ['**/*.{ts,tsx}'],
