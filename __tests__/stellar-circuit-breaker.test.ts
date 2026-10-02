@@ -16,9 +16,13 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // ── Mock @opentelemetry/api before importing the module under test ─────────
 
-const mockAdd = vi.fn();
-const mockAddCallback = vi.fn();
-const mockObserve = vi.fn();
+// vi.mock factories are hoisted above imports, so anything they close over
+// has to be created with vi.hoisted.
+const { mockAdd, mockAddCallback, mockObserve } = vi.hoisted(() => ({
+  mockAdd: vi.fn(),
+  mockAddCallback: vi.fn(),
+  mockObserve: vi.fn(),
+}));
 
 vi.mock('@opentelemetry/api', () => ({
   metrics: {
