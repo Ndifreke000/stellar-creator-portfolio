@@ -18,7 +18,12 @@ import { ZodError } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { tracingMiddleware } from '@/backend/services/tracing';
 import { CircuitOpenError } from '@/services/api/stellar/client';
-import { rateLimitMiddleware } from '@/backend/src/rateLimit';
+import {
+  checkRate,
+  rateLimitKey,
+  rateLimitMiddleware,
+  RateLimitExceededError,
+} from '@/backend/src/rateLimit';
 import jwt from 'jsonwebtoken';
 
 // ─── Context Creation ─────────────────────────────────────────────────────────
@@ -163,14 +168,44 @@ const circuitBreakerMw = t.middleware(async ({ ctx, next }) => {
  * runtime by `rateLimitMiddleware` based on deployment topology.
  */
 const rateLimitMw = t.middleware(async ({ ctx, next, path }) => {
-  await rateLimitMiddleware({
-    req: ctx.req,
-    headers: ctx.headers,
-    user: ctx.user,
-    path,
-  });
+  try {
+    await rateLimitMiddleware({
+      req: ctx.req,
+      headers: ctx.headers,
+      user: ctx.user,
+      path,
+    });
+  } catch (err) {
+    if (err instanceof RateLimitExceededError) {
+      throw new TRPCError({ code: 'TOO_MANY_REQUESTS', message: err.message });
+    }
+    throw err;
+  }
   return next();
 });
+
+/**
+ * Per-procedure limiter, layered on top of the global one for endpoints
+ * that need a tighter (or looser) budget than the tier default:
+ *
+ *   publicProcedure.use(rateLimit({ windowMs: 60_000, max: 60 }))
+ *
+ * Buckets are keyed by procedure path plus user id (or client IP when
+ * unauthenticated), so one hot endpoint can't starve another.
+ */
+export function rateLimit({ windowMs, max }: { windowMs: number; max: number }) {
+  return t.middleware(async ({ ctx, next, path }) => {
+    const key = rateLimitKey(ctx.headers ?? ctx.req.headers, { userId: ctx.user?.id }, path);
+    const result = checkRate(key, max, windowMs / 1000);
+    if (!result.allowed) {
+      throw new TRPCError({
+        code: 'TOO_MANY_REQUESTS',
+        message: `Rate limit exceeded. Retry after ${result.retryAfter}s`,
+      });
+    }
+    return next();
+  });
+}
 
 // ─── Base Procedures ──────────────────────────────────────────────────────────
 
