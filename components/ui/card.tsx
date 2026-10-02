@@ -1,13 +1,9 @@
 import * as React from 'react'
-import { motion } from 'framer-motion'
+import { motion, type HTMLMotionProps } from 'framer-motion'
 
 import { cn } from '@/lib/utils'
 
-function Card({ className, ...props }: React.ComponentProps<'div'>) {
-  const prefersReducedMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
+function Card({ className, ...props }: HTMLMotionProps<'div'>) {
   return (
     <motion.div
       data-slot="card"
@@ -15,11 +11,7 @@ function Card({ className, ...props }: React.ComponentProps<'div'>) {
         'bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm',
         className,
       )}
-      whileHover={
-        !prefersReducedMotion
-          ? { y: -2 }
-          : undefined
-      }
+      whileHover={{ y: -2 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       {...props}
     />

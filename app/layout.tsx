@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "next-themes";
 import { LayoutProvider } from "@/components/layout-provider";
 import { DataLoaderProvider } from "@/app/providers/DataLoaderProvider";
+import { MotionProvider } from "@/app/providers/MotionProvider";
 import { TRPCProvider } from "@/app/providers/TRPCProvider";
 import { WalletProvider } from "@/contexts/WalletContext";
 import "./animations.css";
@@ -85,7 +86,9 @@ export default function RootLayout({
           <WalletProvider>
             <TRPCProvider>
               <DataLoaderProvider>
-                <LayoutProvider>{children}</LayoutProvider>
+                <MotionProvider>
+                  <LayoutProvider>{children}</LayoutProvider>
+                </MotionProvider>
               </DataLoaderProvider>
             </TRPCProvider>
           </WalletProvider>

@@ -47,10 +47,6 @@ function Button({
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
   }) {
-  const prefersReducedMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
   const MotionButton = motion.button as any
   const Comp = asChild ? Slot : MotionButton
 
@@ -59,8 +55,8 @@ function Button({
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...(!asChild && {
-        whileHover: !prefersReducedMotion ? { scale: 1.02 } : undefined,
-        whileTap: !prefersReducedMotion ? { scale: 0.98 } : undefined,
+        whileHover: { scale: 1.02 },
+        whileTap: { scale: 0.98 },
         transition: { type: 'spring', stiffness: 400, damping: 25 },
       })}
       {...props}
