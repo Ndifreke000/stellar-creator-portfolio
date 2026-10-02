@@ -3,6 +3,13 @@ import { render, screen, act, waitFor } from '@testing-library/react'
 import React from 'react'
 import { LayoutProvider, notifyLoadingChange, useGlobalLoading } from './layout-provider'
 
+// LayoutProvider mounts the comparison bar, which navigates with the app
+// router; outside a Next.js tree there is none to read.
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }),
+  usePathname: () => '/',
+}))
+
 // ── Helper consumer ───────────────────────────────────────────────────────────
 
 function LoadingConsumer() {
