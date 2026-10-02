@@ -15,7 +15,7 @@ vi.mock('@/contexts/WalletContext', () => ({
     address: null, network: 'unknown', isConnected: false, isLoading: false, connect: vi.fn(), disconnect: vi.fn(),
   }),
 }));
-vi.mock('@/backend/services/notifications/notification-center', () => ({ NotificationCenter: () => null }));
+vi.mock('@/components/notifications/notification-center', () => ({ NotificationCenter: () => null }));
 vi.mock('@/components/streaming/deferred-swap-launcher', () => ({ DeferredSwapLauncher: () => null }));
 vi.mock('@/components/connect-wallet-button', () => ({
   ConnectWalletButton: () => null,

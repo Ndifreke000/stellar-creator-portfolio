@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 import { MobileNav, MOBILE_NAV_PANEL_ID } from '@/components/layout/mobile-nav';
 import { Button } from '@/components/ui/button';
 import { DeferredSwapLauncher } from '@/components/streaming/deferred-swap-launcher';
-import { NotificationCenter } from '@/backend/services/notifications/notification-center';
+import { NotificationCenter } from '@/components/notifications/notification-center';
 import { ConnectWalletButton, formatAccount } from '@/components/connect-wallet-button';
 import { useWallet } from '@/contexts/WalletContext';
 

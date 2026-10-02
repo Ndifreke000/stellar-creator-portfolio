@@ -19,12 +19,12 @@ import {
 import {
   NotificationSettingsChannels,
   NotificationChannel,
-} from './components/notification-settings-channels';
+} from './settings/notification-settings-channels';
 import {
   NotificationSettingsCategories,
   NotificationCategory,
-} from './components/notification-settings-categories';
-import { NotificationSettingsQuietHours } from './components/notification-settings-quiet-hours';
+} from './settings/notification-settings-categories';
+import { NotificationSettingsQuietHours } from './settings/notification-settings-quiet-hours';
 
 export type { NotificationChannel, NotificationCategory };
 
