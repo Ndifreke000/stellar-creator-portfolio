@@ -10,16 +10,18 @@ export function AxeObserver() {
   useEffect(() => {
     if (process.env.NODE_ENV !== 'development') return;
 
-    let cleanup: (() => void) | undefined;
-
-    import('@axe-core/react').then(({ default: axe }) => {
-      const React = require('react');
-      const ReactDOM = require('react-dom');
-      axe(React, ReactDOM, 1000);
-      // @axe-core/react does not expose an unsubscribe API, so we leave it running.
-    });
-
-    return cleanup;
+    // @axe-core/react is an optional dev tool: install it locally to get
+    // reports. The specifier is a variable so builds don't require it.
+    const specifier = '@axe-core/react';
+    import(/* webpackIgnore: true */ /* turbopackIgnore: true */ specifier)
+      .then(async ({ default: axe }) => {
+        const [React, ReactDOM] = await Promise.all([import('react'), import('react-dom')]);
+        // @axe-core/react has no unsubscribe API, so it is left running.
+        axe(React, ReactDOM, 1000);
+      })
+      .catch(() => {
+        // Not installed; accessibility reporting stays off.
+      });
   }, []);
 
   return null;
