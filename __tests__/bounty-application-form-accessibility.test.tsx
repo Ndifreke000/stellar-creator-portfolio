@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { BountyApplicationForm } from '@/components/bounty-application-form';
+import { BountyApplicationForm } from '@/components/bounties/bounty-application-form';
 
 describe('BountyApplicationForm Accessibility', () => {
   const mockProps = {

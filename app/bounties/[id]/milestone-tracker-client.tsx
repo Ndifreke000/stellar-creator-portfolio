@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { MilestoneTracker } from '@/components/MilestoneTracker'
+import { MilestoneTracker } from '@/components/bounties/milestone-tracker'
 import type { Milestone, MilestoneStatus } from '@/lib/services/creators-data'
 import { Wifi, WifiOff } from 'lucide-react'
 

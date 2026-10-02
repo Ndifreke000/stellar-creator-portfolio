@@ -9,7 +9,7 @@ import { ArrowRight, Sparkles, Users, Target } from 'lucide-react';
 import { trpc } from '@/lib/trpc-client';
 import { creators } from '@/lib/services/creators-data';
 import { TestimonialsSection } from '@/components/testimonials';
-import { FeaturedBounties } from '@/components/featured-bounties';
+import { FeaturedBounties } from '@/components/bounties/featured-bounties';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { CardSkeletonGrid } from '@/components/skeletons/card-skeleton';
 
