@@ -63,6 +63,9 @@ model User {
   /// Stellar public key (G...), set once a wallet has been linked via SEP-10.
   /// Required to attest KYC on-chain (Issue #782).
   walletAddress       String?   @unique
+  /// Set while an admin suspension is in force; null for active accounts.
+  suspendedAt         DateTime? @db.Timestamptz
+  suspensionReason    String?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
   
@@ -94,6 +97,7 @@ model User {
   projects            Project[]
 
   @@index([email])
+  @@index([suspendedAt])
 }
 
 model VerificationToken {
