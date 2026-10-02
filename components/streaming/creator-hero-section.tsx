@@ -13,10 +13,12 @@ export async function CreatorHeroSection({ id }: { id: string }) {
       <div className="relative h-48 sm:h-64 w-full bg-muted overflow-hidden">
         <Image
           src={creator.coverImage}
-          alt={`${creator.name} cover`}
+          alt={`${creator.name} cover image`}
           fill
+          sizes="100vw"
           className="object-cover"
           priority
+          loading="eager"
         />
       </div>
 
