@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { paymentFlowSchema } from '@/lib/payment-validation'
+import { paymentFlowSchema } from '@/lib/payments/payment-flow'
 import {
   discoverTransferServer,
   Sep24Error,

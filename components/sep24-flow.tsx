@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { paymentFlowSchema, validatePaymentFlow, type PaymentFlowData } from '@/lib/payment-validation';
+import { paymentFlowSchema, validatePaymentFlow, type PaymentFlowData } from '@/lib/payments/payment-flow';
 
 /**
  * SEP-24 payment form: collects and validates amount/asset/account details
@@ -54,7 +54,7 @@ export const Sep24Flow: React.FC<Sep24FlowProps> = ({
     // Validate before submission
     const validation = validatePaymentFlow(data);
     if (!validation.valid) {
-      setSubmitError(validation.errors?.join(', ') ?? 'Validation failed');
+      setSubmitError(validation.errors.join(', '));
       return;
     }
 
