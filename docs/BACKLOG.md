@@ -2,7 +2,7 @@
 
 This is the single canonical location for open-work / priority ordering for this
 repo. Implementation-level technical notes (specs, formulas, data shapes) for
-in-progress items live in [`IMPLEMENTATION_NOTES.md`](../IMPLEMENTATION_NOTES.md)
+in-progress items live in [`IMPLEMENTATION_NOTES.md`](./IMPLEMENTATION_NOTES.md)
 at the repo root — this file tracks *what's next and in what order*, that one
 tracks *how to build it*. When an item below has a corresponding spec, it links
 to it directly instead of duplicating the details here.

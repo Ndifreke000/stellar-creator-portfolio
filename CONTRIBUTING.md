@@ -52,7 +52,7 @@ workflow, code style, testing, and the PR/merge process for this repo.
   (Soroban smart contracts)
 - **Tests**: `__tests__/` (unit + `*.e2e.test.ts` for E2E)
 - **Docs**: [`docs/BACKLOG.md`](docs/BACKLOG.md) for priority ordering,
-  [`IMPLEMENTATION_NOTES.md`](IMPLEMENTATION_NOTES.md) for implementation
+  [`docs/IMPLEMENTATION_NOTES.md`](docs/IMPLEMENTATION_NOTES.md) for implementation
   specs of in-progress work
 
 ## Development Workflow
@@ -121,7 +121,7 @@ There is no `test:ci` script — run `pnpm test` and `pnpm run test:e2e` separat
 ## Documentation
 
 - Update relevant docs with feature changes; keep `docs/BACKLOG.md` and
-  `IMPLEMENTATION_NOTES.md` cross-linked rather than letting a third,
+  `docs/IMPLEMENTATION_NOTES.md` cross-linked rather than letting a third,
   untracked doc start drifting
 - Documentation changes should land in the same PR as the code change they
   describe, not as a standalone doc-only commit to `main`

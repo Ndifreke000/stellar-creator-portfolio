@@ -1,7 +1,7 @@
 # Implementation Notes
 
 Technical specs and implementation detail for in-progress backlog items. For
-*priority ordering* of what's next, see [`docs/BACKLOG.md`](docs/BACKLOG.md) —
+*priority ordering* of what's next, see [`BACKLOG.md`](./BACKLOG.md) —
 that's the canonical backlog location; this file is its implementation-detail
 companion, cross-linked so the two don't drift apart.
 
