@@ -2,7 +2,6 @@
 
 import { useId, useState } from 'react';
 import { ChevronDown, X } from 'lucide-react';
-import * as SelectPrimitive from '@radix-ui/react-select';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';

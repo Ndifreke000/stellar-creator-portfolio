@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { bounties } from '@/lib/services/creators-data';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Clock, DollarSign, Zap } from 'lucide-react';
+import { ArrowRight, Clock, DollarSign } from 'lucide-react';
 
 export function FeaturedBounties() {
   const router = useRouter();

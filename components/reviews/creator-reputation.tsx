@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { ApiResponse, CreatorReputationPayload, PublicReview, ReputationAggregation } from '@/lib/api-models';
+import type { ApiResponse, PublicReview, ReputationAggregation } from '@/lib/api-models';
 import { isApiSuccess } from '@/lib/api-models';
 import { ReviewList } from '@/components/reviews/review-list';
 import { ReviewFilters, type ReviewFilterOptions } from '@/components/reviews/review-filters';

@@ -1,5 +1,4 @@
 import { CardSkeleton, BountySkeleton, TextSkeleton } from '@/components/skeletons/card-skeleton';
-import { Skeleton } from '@/components/ui/skeleton';
 
 /** Skeleton for a full creator profile page */
 export function CreatorProfileSkeleton() {
