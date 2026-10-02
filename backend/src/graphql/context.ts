@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import jwt from 'jsontwebtoken';
+import jwt from 'jsonwebtoken';
 import { hashApiKey } from '@/lib/api-keys';
-import { checkRateLimit, RateLimitResult } from '@/src/rateLimit';
+import { checkRateLimit, RateLimitResult } from '@/backend/src/rateLimit';
 
 export interface GraphQLContext {
   req: NextRequest;
@@ -26,7 +26,7 @@ export async function createGraphQLContext(req: NextRequest): Promise<GraphQLCon
       if (!JWT_SECRET) {
         throw new Error('JWT_SECRET environment variable is not set');
       }
-      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload & { userId: string };
 
       const dbUser = await prisma.user.findUnique({
         where: { id: decoded.userId },
@@ -78,7 +78,7 @@ export async function createGraphQLContext(req: NextRequest): Promise<GraphQLCon
 
   // Apply rate limiting: higher tier for authenticated profile actions,
   // stricter limits for unauthenticated endpoint structures.
-  const rateLimit = await checkRateLimit(req, {
+  const rateLimit = checkRateLimit(req, {
     userId,
     apiKeyId,
     isAuthenticated,
