@@ -92,6 +92,10 @@ export function useWebSocket({
     onConnectionChangeRef.current = onConnectionChange;
   }, [onMessage, onError, onConnectionChange]);
 
+  // connect() schedules itself on reconnect; going through a ref lets the
+  // timer call the latest version without the callback referencing itself.
+  const connectRef = useRef<() => void>(() => {});
+
   const connect = useCallback(() => {
     try {
       const ws = new WebSocket(url);
@@ -141,7 +145,7 @@ export function useWebSocket({
         if (reconnectCountRef.current < reconnectAttempts) {
           reconnectCountRef.current += 1;
           reconnectTimeoutRef.current = setTimeout(() => {
-            connect();
+            connectRef.current();
           }, reconnectDelay);
         }
       };
@@ -152,6 +156,10 @@ export function useWebSocket({
       onErrorRef.current?.(error);
     }
   }, [url, reconnectAttempts, reconnectDelay]);
+
+  useEffect(() => {
+    connectRef.current = connect;
+  }, [connect]);
 
   const send = useCallback(
     (message: WebSocketMessage<WebSocketEventType>) => {
