@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { PaginationControls } from '@/components/ui/pagination-controls';
-import { ageLabel, type Dispute } from './types';
+import { ageLabel, type Dispute } from '../types';
 
 interface DisputeListProps {
   disputes: Dispute[];
@@ -60,7 +60,7 @@ export function DisputeList({
 
         {totalPages > 1 && (
           <PaginationControls
-            currentPage={currentPage}
+            page={currentPage}
             totalPages={totalPages}
             onPageChange={onPageChange}
           />

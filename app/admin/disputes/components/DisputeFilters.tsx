@@ -2,8 +2,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-
-type StatusFilter = 'open' | 'resolved' | 'all';
+import type { StatusFilter } from '../types';
 
 interface DisputeFiltersProps {
   current: StatusFilter;

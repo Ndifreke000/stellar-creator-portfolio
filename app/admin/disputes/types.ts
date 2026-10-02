@@ -9,6 +9,8 @@ export interface Dispute {
   updatedAt: string;
 }
 
+export type StatusFilter = 'open' | 'resolved' | 'all';
+
 export type Resolution = 'release_to_freelancer' | 'refund_to_creator' | 'split_50_50';
 
 export const RESOLUTION_LABELS: Record<Resolution, string> = {

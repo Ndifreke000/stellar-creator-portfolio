@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { StatusBadge } from '@/components/ui/status-badge';
-import { ageLabel, RESOLUTION_LABELS, type Dispute, type Resolution } from './types';
+import { ageLabel, RESOLUTION_LABELS, type Dispute, type Resolution } from '../types';
 
 interface DisputeDetailProps {
   dispute: Dispute | null;
