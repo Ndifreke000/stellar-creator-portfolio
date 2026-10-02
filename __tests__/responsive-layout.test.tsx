@@ -10,7 +10,7 @@ vi.mock('next/link', () => ({
   ),
 }));
 vi.mock('next-themes', () => ({ useTheme: () => ({ theme: 'light', setTheme: vi.fn() }) }));
-vi.mock('@/contexts/WalletContext', () => ({
+vi.mock('@/components/wallet/wallet-context', () => ({
   useWallet: () => ({
     address: null, network: 'unknown', isConnected: false, isLoading: false, connect: vi.fn(), disconnect: vi.fn(),
   }),

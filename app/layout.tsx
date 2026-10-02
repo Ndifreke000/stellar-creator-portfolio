@@ -7,7 +7,7 @@ import { DataLoaderProvider } from "@/components/providers/data-loader-provider"
 import { MotionProvider } from "@/components/providers/motion-provider";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { TRPCProvider } from "@/components/providers/trpc-provider";
-import { WalletProvider } from "@/contexts/WalletContext";
+import { WalletProvider } from "@/components/wallet/wallet-context";
 import "./animations.css";
 import "./globals.css";
 

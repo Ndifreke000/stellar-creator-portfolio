@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { DeferredSwapLauncher } from '@/components/streaming/deferred-swap-launcher';
 import { NotificationCenter } from '@/components/notifications/notification-center';
 import { ConnectWalletButton, formatAccount } from '@/components/wallet/connect-wallet-button';
-import { useWallet } from '@/contexts/WalletContext';
+import { useWallet } from '@/components/wallet/wallet-context';
 
 export function Header() {
   const { theme, setTheme } = useTheme();
