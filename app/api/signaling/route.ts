@@ -10,7 +10,7 @@
  *     signaling WebSocket first (e.g., to pre-warm the TURN connection).
  *
  * For production, clients should connect directly to the signaling WebSocket
- * server (server/signaling.ts) for the lowest latency.
+ * server (server/realtime/signaling.ts) for the lowest latency.
  */
 
 import { NextRequest, NextResponse } from 'next/server';

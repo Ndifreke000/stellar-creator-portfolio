@@ -1,5 +1,5 @@
 /**
- * Tests for server/signaling.ts  (#637)
+ * Tests for server/realtime/signaling.ts  (#637)
  *
  * Since the signaling server is a standalone Node.js process, we test the
  * pure utility functions (credential generation, message parsing, room logic)
@@ -18,7 +18,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createHmac } from 'crypto';
 
-// ── TURN credential utilities (extracted from server/signaling.ts) ────────────
+// ── TURN credential utilities (extracted from server/realtime/signaling.ts) ────────────
 
 const TURN_SECRET = 'test-secret-for-unit-tests';
 const TURN_HOST = 'turn.example.com';

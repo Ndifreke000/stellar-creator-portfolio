@@ -39,7 +39,7 @@
     "node_modules",
     "mobile/**",
     "backend/limit/**",
-    "server/**",
+    "server/realtime/**",
     "e2e/**",
     "load-tests/**",
     "infrastructure/**",

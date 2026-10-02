@@ -1,7 +1,7 @@
 /**
  * Standalone Yjs WebSocket collaboration server.
- * Run with: node --loader ts-node/esm server/collab.ts
- * Or in production: node server/collab.js
+ * Run with: node --loader ts-node/esm server/realtime/collab.ts
+ * Or in production: node server/realtime/collab.js
  *
  * Listens on WS_PORT (default 1234) and handles Yjs CRDT sync
  * for all document rooms identified by the URL path.
