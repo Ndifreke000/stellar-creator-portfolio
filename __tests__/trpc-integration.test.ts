@@ -41,11 +41,16 @@ vi.mock('jsonwebtoken', () => ({
   },
 }));
 
-vi.mock('@/backend/services/events', () => ({
+// Partial mocks: only the side-effecting entry points are replaced, so the
+// pure helpers these suites also exercise (hashIp, sanitisePayload, the
+// webhook registry) stay real.
+vi.mock('@/backend/services/events', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/backend/services/events')>()),
   emitEvent: vi.fn(),
 }));
 
-vi.mock('@/backend/services/audit', () => ({
+vi.mock('@/backend/services/audit', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/backend/services/audit')>()),
   writeAuditLog: vi.fn().mockResolvedValue({ id: 'audit-1' }),
 }));
 
@@ -77,15 +82,17 @@ describe('tRPC Infrastructure — Issue #1331', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // createContext refuses to verify tokens without a configured secret.
+    vi.stubEnv('JWT_SECRET', 'test-secret');
   });
 
   // ── AppRouter type export ──────────────────────────────────────────────────
 
   describe('AppRouter type export', () => {
-    it('should export AppRouter type (compile-time check)', () => {
+    it('should export AppRouter type (compile-time check)', async () => {
       // If this file compiles, the type is correctly exported.
       // Runtime assertion: the router module must export the type.
-      const routerModule = require('@/backend/src/router');
+      const routerModule = await import('@/backend/src/router');
       expect(routerModule).toHaveProperty('appRouter');
     });
   });
