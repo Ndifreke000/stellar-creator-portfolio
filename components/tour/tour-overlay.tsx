@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { TourTooltip } from '@/components/TourTooltip';
+import { TourTooltip } from '@/components/tour/tour-tooltip';
 
 interface TourOverlayProps {
   /** Whether the tour step is currently visible. */

@@ -1,6 +1,6 @@
 'use client';
 
-import { TourOverlay } from '@/components/TourOverlay';
+import { TourOverlay } from '@/components/tour/tour-overlay';
 import { useTour } from '@/hooks/useTour';
 
 export function OnboardingTour() {

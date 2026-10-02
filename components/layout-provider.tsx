@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { ComparisonProvider } from '@/components/ComparisonContext'
 import { ComparisonBar } from '@/components/ComparisonBar'
-import { OnboardingTour } from '@/components/OnboardingTour'
+import { OnboardingTour } from '@/components/tour/onboarding-tour'
 import { BackToTop } from '@/components/back-to-top'
 
 // ── Loading event bus ─────────────────────────────────────────────────────────
