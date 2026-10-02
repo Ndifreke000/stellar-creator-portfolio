@@ -37,21 +37,26 @@ interface WalletAdapter {
 }
 
 async function getFreighterAdapter(): Promise<WalletAdapter> {
-  const { isConnected, getPublicKey, getNetwork } = await import('@stellar/freighter-api');
-  const connected = await isConnected();
-  if (!connected) throw new Error('Freighter extension not found');
+  const { isConnected, requestAccess, getNetwork } = await import('@stellar/freighter-api');
+  const connection = await isConnected();
+  if (connection.error || !connection.isConnected) {
+    throw new Error('Freighter extension not found');
+  }
   return {
     getPublicKey: async () => {
-      const result = await getPublicKey();
-      if (typeof result === 'string') return result;
-      if (result && typeof (result as any).publicKey === 'string') return (result as any).publicKey;
-      throw new Error('Failed to get public key from Freighter');
+      // requestAccess prompts for permission the first time and resolves
+      // with the already-authorised address on later calls.
+      const result = await requestAccess();
+      if (result.error || !result.address) {
+        throw new Error('Failed to get public key from Freighter');
+      }
+      return result.address;
     },
     getNetwork: async () => {
-      const net = await getNetwork();
-      const n = typeof net === 'string' ? net : (net as any)?.network ?? '';
-      if (n.toLowerCase().includes('main')) return 'mainnet';
-      if (n.toLowerCase().includes('test')) return 'testnet';
+      const result = await getNetwork();
+      const n = result.error ? '' : result.network.toLowerCase();
+      if (n.includes('main') || n === 'public') return 'mainnet';
+      if (n.includes('test')) return 'testnet';
       return 'unknown';
     },
   };
