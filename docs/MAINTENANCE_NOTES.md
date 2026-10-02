@@ -83,87 +83,39 @@ items below have been implemented here.
   not attempted here since it needs real iteration against the dependency
   graph, not a one-line change.
 
-## `pnpm run build`'s TypeScript check: ~149 real errors remain after fixing the build-blockers
+## Web app health: typecheck, tests, lint and build (resolved October 2026)
 
-Fixed in this pass: `pnpm run build` used to fail before it could even bundle
-(missing `stripe`/`ioredis`/`graphql` deps, a stale generated Prisma client,
-a `tsconfig.json` with no `exclude` so the project-wide typecheck pulled in
-`mobile/`'s React Native code, `backend/limit/`'s standalone sub-project, and
-every `*.test.ts(x)` file — none of which are part of this app's own build).
-Turbopack now reports "Compiled successfully" and the typecheck step is
-correctly scoped to just this app's real code. What's left, `npx tsc --noEmit
--p tsconfig.json` reports ~149 errors, categorized (counts from `error TSxxxx`
-codes at the time of writing — will drift):
+`pnpm run typecheck`, `pnpm test`, `pnpm run lint` and `pnpm run build` all pass,
+and CI's frontend job now runs the typecheck and the unit tests as well as lint and
+build. Previously two botched merges hid ~150 type errors (tsc stops at syntax
+errors), 37 vitest files failed, ESLint reported ~3,400 errors and the production
+build failed on unresolved modules. Notable fixes behind that:
 
-- **Prisma schema/code drift (~50 errors, TS2339/TS2322/TS2353)**: real code
-  references fields/models that don't exist in `prisma/schema.prisma` at all
-  — confirmed by grepping the schema directly, not just a stale generated
-  client. Two concrete examples: `app/admin/actions.ts` reads/writes a
-  `suspendedAt` field on `User` (for a user-suspension admin action) that
-  the `User` model doesn't have; `app/api/analytics/corridors/route.ts`
-  queries `prisma.corridorPayment`, but no `CorridorPayment` model exists.
-  These aren't just type errors — calling either at runtime would throw,
-  since Prisma validates queries against the schema. Needs someone who
-  knows the intended data model to add the missing fields/models and a
-  migration, not a type-only fix.
-  - More instances found in `backend/src/router.ts` (the tRPC layer flagged
-    elsewhere in this file): its entire `creators` and `projects` sub-routers
-    are built against `prisma.creator` and `prisma.project` — not typos for
-    the schema's actual `CreatorProfile` model, but whole models
-    (`Creator` with `name`/`title`/`discipline`/`bio`/`avatar`/`coverImage`
-    fields and a `projects`/`reviews` relation; `Project` with
-    `tags`/`year`/`link`) that were never added to the schema at all. Also:
-    `backend/src/graphql/rate-limit.ts` queries `prisma.apiKeyUsage` — only
-    `ApiKey` exists, no `ApiKeyUsage` model — and both
-    `backend/src/graphql/resolvers.ts` and `router.ts` write/select a
-    `difficulty` field on `Bounty` that the model doesn't have (its real
-    fields are `budget`, `deadline`, `status`, `category`, `tags` — no
-    difficulty rating anywhere). Same conclusion as above: this needs
-    someone who knows the intended data model, not a guessed schema
-    addition — `creators`/`projects` in particular look like a whole
-    feature area that was scaffolded in the router before the schema
-    caught up, not a small drift.
-- **`services/api/stellar/contract.ts` (4 errors)**: `ScVal`/`LedgerEntryData`
-  conversion, a private `Account.sequence` access, `GetTransactionStatus`
-  missing `PENDING`. Likely a `@stellar/stellar-sdk` version drift (the
-  types this file was written against no longer match what's installed).
-- **`backend/src/graphql/*` and `backend/src/router.ts`/`trpc-setup.ts`**:
-  a tRPC + GraphQL server layer living under `backend/src/` (confusingly
-  alongside the unrelated Rust workspace also called `backend/`) that's
-  real and reachable from `app/api/trpc/[trpc]/route.ts` and
-  `app/api/graphql/route.ts` — not dead code, has its own real type errors.
-  Worth its own dedicated pass; not attempted here beyond confirming it's
-  live code, not noise.
-- **Missing `@types/ws`** (`app/api/collab/route.ts`, TS7016): add it as a
-  dev dependency.
-- **`error TS2737` (10, BigInt literals not available below ES2020)**:
-  `tsconfig.json`'s `target` is `ES6` — likely wants bumping, but do that as
-  its own change and re-verify the whole app against the new target rather
-  than folding it into an unrelated fix.
-- **The rest**: scattered `any`-typed callback parameters (`TS7006`),
-  `Promise<ReadonlyRequestCookies>` used without `await` (Next 15+ made
-  `cookies()` async - `app/admin/analytics/page.tsx`), and similar
-  one-off issues — see a fresh `npx tsc --noEmit -p tsconfig.json` for the
-  current exact list.
+- Prisma schema drift: `User.suspendedAt`/`suspensionReason` and `CorridorPayment`
+  now match their migrations; `Balance.userId` is unique and `Transaction.status`
+  exists (see the escrow section below).
+- The tRPC `creators` endpoints query `CreatorProfile` (there is no `Creator`
+  model) and no longer return `Math.random()` placeholder stats; the rate limiter
+  the router imported is implemented; GraphQL builds its schema once and enforces
+  the context's rate-limit decision for every caller.
+- Missing modules were written rather than stubbed: SEP-24 payment validation,
+  S3 object storage and `POST /api/upload`, and the signature-verified Stripe
+  webhook at `/api/webhooks/stripe`.
+- Library upgrades: framer-motion 12 (React 19 types), react-resizable-panels 4,
+  Freighter API 6, react-day-picker 10 class names, React Query v5 `isPending`.
+- The JWT fallback secret `'dev-secret-key'` is gone; tokens fail closed when
+  `JWT_SECRET` is unset.
 
-Also fixed as part of this: 6 GitHub Actions steps across `ci.yml`,
-`cli-checks.yml`, and `deploy-mainnet.yml` pinned `pnpm/action-setup` to
-`version: 8`, while this repo's lockfile is `lockfileVersion: '9.0'` (pnpm
-9+) and `package.json`'s own `packageManager` field pins `pnpm@10.33.0` —
-pnpm 8 cannot read a v9 lockfile at all. All 6 bumped to `version: 10`
-(matching `nightly-tier-upgrade.yml`, which already had it right).
+## server/services/notifications/push-route.ts is deliberately not mounted
 
-## backend/services/notifications/push-route.ts isn't mounted anywhere
-
-- The file exists and is a complete Next.js route handler (`POST`/`PUT`/`GET`
-  for `/api/notifications/push`), but it sits in
-  `backend/services/notifications/`, not under `app/api/`. Next.js App
-  Router only serves a route from a file literally at
-  `app/api/<path>/route.ts`, so this endpoint does not currently exist in
-  the running app.
-- Fix: move it to `app/api/notifications/push/route.ts` (or re-export it
-  from a thin file there), then verify the curl examples in
-  `backend/services/notifications/README.md` actually work.
+- These push handlers (`POST`/`PUT`/`PATCH`/`GET`) now live beside the push service
+  in `server/services/notifications/`. They must not be routed yet:
+  `validateRequest()` only checks that an `Authorization: Bearer …` header is
+  present without verifying it, so mounting them would let anyone send
+  notifications to any user. `PATCH` has no auth at all and expects an `[id]`
+  route param.
+- Fix: verify the token (session or signed service token), scope `PATCH` to the
+  notification's owner, then add `app/api/notifications/push/route.ts`.
 
 ## mobile/: `npm install` cannot succeed as currently pinned (needs a dependency decision)
 
@@ -336,99 +288,32 @@ need someone to decide what the intended real shape is (does "list users" even b
 as a public API, or should that test be deleted; should review creation be built, or
 should this scenario be deleted too) rather than guessing a URL.
 
-## lib/error-tracking.ts: Sentry integration references an uninstalled package
+## lib/error-tracking.ts: Sentry is an optional integration
 
-`initializeSentry()` does `const Sentry = await import('@sentry/nextjs')`, gated
-behind `NEXT_PUBLIC_SENTRY_DSN` being set (it warns and no-ops otherwise) - a
-reasonable, deliberately-soft integration. But `@sentry/nextjs` isn't in
-`package.json` at all, and there's no `sentry.client.config.ts`/
-`sentry.server.config.ts`/`next.config.js` wrapping (the pieces Sentry's own setup
-wizard normally adds). Two consequences:
+`@sentry/nextjs` is still not a dependency. The tracker now loads it lazily, only
+when `NEXT_PUBLIC_SENTRY_DSN` is set, and logs a warning (instead of throwing) if the
+package is missing, so builds and type-checking no longer depend on it. Turning
+Sentry on for real still needs the package, its config files and a DSN — a product
+decision, not a code fix.
 
-- `tsc` can't resolve the dynamic import's types (`Cannot find module '@sentry/nextjs'`).
-- More importantly, if anyone ever *does* set `NEXT_PUBLIC_SENTRY_DSN` in a real
-  deployment expecting error tracking to start working, this throws
-  "Cannot find module" at runtime instead - the DSN gate only protects against
-  "unconfigured," not "package missing."
+## Transactional email queue is not built
 
-Not added here: unlike the web app's `pnpm run build`-blocking runtime dependencies
-added earlier this session (stripe, ioredis, graphql - things the code already
-assumes exist to talk to services this app is already built around), Sentry is a
-new third-party SaaS integration decision with its own account/DSN/cost
-implications, not an obvious "the code already depends on this" case. Needs someone
-to decide whether to actually wire up Sentry (run its setup wizard properly, get a
-real DSN) or rip out this dead integration path if error tracking isn't actually a
-current priority.
+`lib/email.ts`, `lib/email/index.ts` and `lib/email/bounty-notify.ts` were removed:
+they re-exported a mailer module and an email-queue API (`submitQueuedEmail`,
+`processEmailQueue`, unsubscribe tokens, per-category preferences) that were never
+written, and nothing imported them. The Handlebars templates in
+`lib/email/templates/` remain. Building the queue still needs decisions on its
+persistence (`EmailDeliveryLog` looks intended), unsubscribe-token handling and the
+category-to-`NotificationPreference` mapping.
 
-## lib/notifications: a real email-queue subsystem is imported but was never built
+## Escrow release/refund: schema fixed; migrations still incomplete
 
-`lib/services/bounty-service.ts` imports `persistInAppNotification` from
-`@/lib/notifications` - that module didn't exist at all (real, confirmed missing
-file, not a typo). Added `lib/notifications.ts` with a working
-`persistInAppNotification` that writes to the `InAppNotification` Prisma model,
-whose fields (`userId`, `title`, `body`, `read`, `applicationId?`, `bountyId?`,
-`createdAt`) map exactly onto `BountyNotificationRecord` - this one was safe and
-narrow enough to actually implement rather than just document.
+`Balance.userId` is now `@unique` and `Transaction` has a `status` column
+(migrations `20261002_balance_user_unique` and `20261002_transaction_status`), so
+`releaseEscrow`/`refundEscrow` produce valid queries. Remaining gap: no migration in
+`prisma/migrations/` creates the `Balance` or `Transaction` tables in the first
+place (the 20260530 migration only adds indexes to them), so a database built purely
+from migrations still lacks them. Generate a baseline migration against a real
+database (`prisma migrate diff --from-migrations … --to-schema-datamodel …`) before
+relying on `prisma migrate deploy`.
 
-But `lib/email.ts` and `lib/email/bounty-notify.ts` (4 call sites) also import
-`submitQueuedEmail`, `processEmailQueue`, `getOrCreateUnsubscribeToken`,
-`canSendEmailCategory`, and a `NotificationEmailCategory` type from the same
-`@/lib/notifications` path - a whole queued-transactional-email subsystem
-(`bounty-notify.ts` calls `submitQueuedEmail` with `to`/`subject`/`template`/
-`category`/`variables` for real flows like "applicant received" emails) that
-doesn't exist anywhere either. This is not something to guess-implement alongside
-the narrow `persistInAppNotification` fix:
-
-- A real queue needs its own persistence/retry semantics - schema.prisma already
-  has `EmailDeliveryLog`, which might be the intended backing table, but nothing
-  confirms that without checking what actually reads/writes it elsewhere.
-- `getOrCreateUnsubscribeToken` implies real token generation, storage, and
-  presumably a public unsubscribe-by-token endpoint - a security-relevant piece
-  (predictable or leakable tokens let someone unsubscribe another user) worth
-  getting right deliberately, not improvised.
-- `canSendEmailCategory` most plausibly should consult `NotificationPreference`
-  (already in the schema: `emailBountyAlerts`, `emailApplicationUpdates`,
-  `emailMessages`, `emailMarketing`) but the exact category-to-field mapping needs
-  someone to actually decide, matching `NotificationEmailCategory`'s intended
-  values (`bounty-notify.ts` passes `'application'` and `'transactional'` as
-  examples, but the full set isn't defined anywhere).
-
-Left unimplemented; `lib/notifications.ts` has a comment pointing back here so it
-isn't mistaken for a complete module.
-
-## CRITICAL: escrow release/refund is currently non-functional (schema gap, not a type nit)
-
-`lib/escrow/escrow-transaction-handler.ts`'s `releaseEscrow` and `refundEscrow` (both
-follow the same shape, ~line 65 and ~line 165) do:
-
-```ts
-await prisma.balance.upsert({ where: { userId: creatorId }, ... });
-await prisma.transaction.create({ data: { ..., status: "completed" } });
-```
-
-Both are invalid against the actual schema, confirmed by reading `prisma/schema.prisma`
-directly:
-
-- `Balance.userId` is a plain indexed field (`@@index([userId])`), not `@unique` or
-  `@id` - Prisma requires a unique field in an `upsert`'s `where`, so this isn't a type
-  quirk, it's an invalid query. Calling either function throws a Prisma validation
-  error at runtime, every time.
-- `Transaction` has no `status` field at all (`id`, `userId`, `escrowId`, `type`,
-  `amount`, timestamps - no status). `status: "completed"` isn't just untyped, the
-  field doesn't exist to write to.
-
-Net effect: **releasing or refunding an escrow is completely broken today**, not a
-future edge case - both code paths fail immediately, before any actual balance or
-transaction row is written. This is worse than the other schema-drift items in this
-file because it's a money-movement path, not analytics or an admin action.
-
-Not fixed here: this needs an actual schema migration (add `@unique` to
-`Balance.userId` - confirming that "one balance row per user" really is the intended
-invariant, since no other code path in the repo touches `Balance` or reads
-`Transaction.status` to contradict it - and add a `status` field to `Transaction`,
-presumably `String` with at least `"completed"`/`"pending"`/`"failed"`, matching what
-this file already writes). There's no live database connected in this environment to
-generate and verify a migration against, and getting an escrow money-movement
-migration wrong is exactly the kind of thing that shouldn't be guessed through
-without being able to test it. Whoever picks this up should treat it as the highest
-priority item in this file.
