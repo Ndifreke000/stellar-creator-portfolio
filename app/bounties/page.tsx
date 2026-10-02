@@ -4,7 +4,7 @@ import { Footer } from '@/components/footer';
 import { BountiesPageSkeleton, BountiesStatsSkeleton } from '@/components/ui/skeleton-group';
 import { BountiesStatsSection } from '@/components/streaming/bounties-stats-section';
 import { fetchBountiesList } from '@/lib/streaming/chunk-data';
-import BountiesWithProvider from './BountiesWithProvider';
+import BountiesClient from './BountiesClient';
 
 /**
  * Streaming map for this route. Each block owns its data and its own Suspense
@@ -14,7 +14,7 @@ import BountiesWithProvider from './BountiesWithProvider';
  */
 async function BountiesListSection() {
   const bounties = await fetchBountiesList();
-  return <BountiesWithProvider bounties={bounties} />;
+  return <BountiesClient bounties={bounties} />;
 }
 
 export default function BountiesPage() {

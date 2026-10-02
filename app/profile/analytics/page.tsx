@@ -11,36 +11,28 @@ const AnalyticsDashboardReal = dynamic(
   { ssr: false, loading: () => <div className="h-64 animate-pulse rounded-md bg-muted" /> },
 )
 
-// Dynamic import for tRPC provider
-const TRPCProvider = dynamic(
-  () => import('@/components/providers/trpc-provider').then((m) => m.TRPCProvider),
-  { ssr: false },
-)
-
 export default function ProfileAnalyticsPage() {
   return (
-    <TRPCProvider>
-      <div className="min-h-screen flex flex-col bg-background">
-        <Header />
-        <main className="flex-grow container max-w-5xl mx-auto px-4 py-10">
-          <div className="mb-8 flex items-start justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
-              <p className="text-muted-foreground mt-1">
-                Real-time earnings, performance, and insights from connected data sources.
-              </p>
-            </div>
-            <SocialShare
-              title="Check out my earnings on Tamgora Creators!"
-              description="Creator analytics and milestones"
-              url="/profile/analytics"
-              hashtags={['TamgoraCreators', 'Web3Earnings', 'Milestone']}
-            />
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+      <main className="flex-grow container max-w-5xl mx-auto px-4 py-10">
+        <div className="mb-8 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
+            <p className="text-muted-foreground mt-1">
+              Real-time earnings, performance, and insights from connected data sources.
+            </p>
           </div>
-          <AnalyticsDashboardReal />
-        </main>
-        <Footer />
-      </div>
-    </TRPCProvider>
+          <SocialShare
+            title="Check out my earnings on Tamgora Creators!"
+            description="Creator analytics and milestones"
+            url="/profile/analytics"
+            hashtags={['TamgoraCreators', 'Web3Earnings', 'Milestone']}
+          />
+        </div>
+        <AnalyticsDashboardReal />
+      </main>
+      <Footer />
+    </div>
   )
 }
