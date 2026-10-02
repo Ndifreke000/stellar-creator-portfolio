@@ -8,9 +8,9 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, Users, Target } from 'lucide-react';
 import { trpc } from '@/lib/trpc-client';
 import { creators } from '@/lib/services/creators-data';
-import { TestimonialsSection } from '@/components/testimonials';
+import { TestimonialsSection } from '@/components/marketing/testimonials';
 import { FeaturedBounties } from '@/components/bounties/featured-bounties';
-import { AnimatedCounter } from '@/components/animated-counter';
+import { AnimatedCounter } from '@/components/marketing/animated-counter';
 import { CardSkeletonGrid } from '@/components/skeletons/card-skeleton';
 
 export default function Home() {

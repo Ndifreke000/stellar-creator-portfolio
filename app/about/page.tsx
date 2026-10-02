@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
-import { TeamSection } from '@/components/team-section';
-import { FeatureGallery } from '@/components/feature-gallery';
+import { TeamSection } from '@/components/marketing/team-section';
+import { FeatureGallery } from '@/components/marketing/feature-gallery';
 import { ArrowRight, Heart, Globe, Zap } from 'lucide-react';
 
 const galleryItems = [
