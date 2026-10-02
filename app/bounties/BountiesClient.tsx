@@ -80,7 +80,7 @@ function ApplyModal({ bounty, onClose }: ApplyModalProps) {
     });
   };
 
-  const submitting = createEscrowMutation.isLoading;
+  const submitting = createEscrowMutation.isPending;
 
   const inputCls = 'w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary';
 

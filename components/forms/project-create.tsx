@@ -143,7 +143,7 @@ export function ProjectCreateForm({ onSubmit, onCancel }: ProjectCreateFormProps
   };
 
   const isValid = title.trim().length > 0 && category.trim().length > 0 && hasRichTextContent(description);
-  const submitting = createProjectMutation.isLoading;
+  const submitting = createProjectMutation.isPending;
 
   const field = (label: string, required: boolean, children: React.ReactNode) => (
     <div>
