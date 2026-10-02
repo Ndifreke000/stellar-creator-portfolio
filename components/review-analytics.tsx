@@ -156,7 +156,7 @@ export function ReviewAnalytics() {
   }
 
   const { overallAggregation, filteredAggregation, reviews } = data || {
-    overallAggregation: { totalReviews: 0, averageRating: 0, stars1: 0, stars2: 0, stars3: 0, stars4: 0, stars5: 0, isVerified: false },
+    overallAggregation: { totalReviews: 0, averageRating: 0, stars1: 0, stars2: 0, stars3: 0, stars4: 0, stars5: 0, isVerified: false, reliabilityScore: 0 },
     reviews: { reviews: [], totalCount: 0, page: 1, limit: 20, totalPages: 0, hasNext: false, hasPrev: false }
   };
 
