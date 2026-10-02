@@ -1,12 +1,8 @@
 /**
- * NOTE: this module is currently incomplete. lib/email.ts and
- * lib/email/bounty-notify.ts also import submitQueuedEmail,
- * processEmailQueue, getOrCreateUnsubscribeToken, canSendEmailCategory,
- * and a NotificationEmailCategory type from '@/lib/notifications' - none
- * of which exist yet. See docs/MAINTENANCE_NOTES.md ("lib/notifications:
- * a real email-queue subsystem is imported but was never built") before
- * assuming this file is a complete implementation of what's imported
- * from '@/lib/notifications' elsewhere.
+ * In-app notification persistence.
+ *
+ * Queued transactional email (delivery log, unsubscribe tokens, per-category
+ * preferences) is not implemented yet; see docs/MAINTENANCE_NOTES.md.
  */
 import { prisma } from '@/lib/prisma';
 
