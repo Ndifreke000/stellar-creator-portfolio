@@ -14,7 +14,7 @@ import {
   trackScrollDepth,
   trackSearch,
   trackSessionStart,
-} from "../../lib/analytics";
+} from "@/lib/analytics";
 
 type Props = {
   plausibleDomain: string;

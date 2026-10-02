@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useDataLoaders } from "@/app/providers/DataLoaderProvider";
+import { useDataLoaders } from "@/components/providers/data-loader-provider";
 
 /**
  * Hook to fetch creator reviews using DataLoader
