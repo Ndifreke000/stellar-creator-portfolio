@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, type BountyDifficulty, type BountyStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { GraphQLContext } from './context';
 
@@ -8,7 +8,7 @@ interface PageArgs {
 }
 
 interface BountiesArgs extends PageArgs {
-  status?: string;
+  status?: BountyStatus;
 }
 
 interface CreatorsArgs extends PageArgs {
@@ -23,7 +23,7 @@ interface CreateBountyArgs {
   deadline: string;
   category: string;
   tags: string[];
-  difficulty: string;
+  difficulty: BountyDifficulty;
 }
 
 interface CreateProjectArgs {
@@ -38,7 +38,7 @@ interface CreateProjectArgs {
 export const resolvers = {
   Query: {
     async bounties(_parent: unknown, args: BountiesArgs, ctx: GraphQLContext) {
-      if (!ctx.isAuthenticated && args.take > 50) {
+      if (!ctx.isAuthenticated && (args.take ?? 10) > 50) {
         throw new Error('Unauthenticated requests limited to 50 results');
       }
 
