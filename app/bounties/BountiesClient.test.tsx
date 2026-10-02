@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import { Keypair } from '@stellar/stellar-sdk';
 
 // BountiesClient talks to the API through tRPC hooks. The list query stays
 // unresolved so the component renders the bounties passed as props, and the
@@ -42,6 +41,9 @@ vi.mock('@/lib/trpc-client', async () => {
 
 import BountiesClient from './BountiesClient';
 import { bounties } from '@/lib/services/creators-data';
+
+// A syntactically valid Stellar public key (checksum included).
+const VALID_ADDRESS = 'GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H';
 
 function renderBounties() {
   return render(<BountiesClient bounties={bounties} />);
@@ -124,7 +126,7 @@ describe('ApplyModal', () => {
 
   it('shows submitting state and then success', async () => {
     openModal();
-    fireEvent.change(screen.getByLabelText(/stellar wallet address/i), { target: { value: Keypair.random().publicKey() } });
+    fireEvent.change(screen.getByLabelText(/stellar wallet address/i), { target: { value: VALID_ADDRESS } });
     fireEvent.change(screen.getByLabelText(/proposed budget/i), { target: { value: '2000' } });
     fireEvent.change(screen.getByLabelText(/delivery timeline/i), { target: { value: '14' } });
     fireEvent.change(screen.getByLabelText(/proposal/i), { target: { value: 'My detailed proposal' } });
