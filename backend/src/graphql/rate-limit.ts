@@ -18,7 +18,7 @@ function getQuota(ctx: GraphQLContext): number {
 export async function checkRateLimit(
   ctx: GraphQLContext,
   operationName?: string
-}): Promise<{ remaining: number; resetAt: Date }> {
+): Promise<{ remaining: number; resetAt: Date }> {
   const quota = getQuota(ctx);
   const now = new Date();
   const windowStart = new Date(now.getTime() - RATE_LIMIT_WINDOW_MS);
