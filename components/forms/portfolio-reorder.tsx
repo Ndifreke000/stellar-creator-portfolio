@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState, useCallback, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState, useCallback, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export interface PortfolioItem {
     id: string;
@@ -36,13 +36,13 @@ export function PortfolioReorder({ items, onChange }: PortfolioReorderProps) {
 
     const handleDragStart = (e: React.DragEvent, index: number) => {
         setDraggedIndex(index);
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", String(index));
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(index));
     };
 
     const handleDragOver = (e: React.DragEvent, index: number) => {
         e.preventDefault();
-        e.dataTransfer.dropEffect = "move";
+        e.dataTransfer.dropEffect = 'move';
         setDragOverIndex(index);
     };
 
@@ -62,11 +62,11 @@ export function PortfolioReorder({ items, onChange }: PortfolioReorderProps) {
     };
 
     const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
-        if (e.key === "ArrowUp" && index > 0) {
+        if (e.key === 'ArrowUp' && index > 0) {
             e.preventDefault();
             moveItem(index, index - 1);
             setFocusedIndex(index - 1);
-        } else if (e.key === "ArrowDown" && index < items.length - 1) {
+        } else if (e.key === 'ArrowDown' && index < items.length - 1) {
             e.preventDefault();
             moveItem(index, index + 1);
             setFocusedIndex(index + 1);
@@ -84,10 +84,10 @@ export function PortfolioReorder({ items, onChange }: PortfolioReorderProps) {
     const addItem = useCallback(() => {
         const newItem: PortfolioItem = {
             id: crypto.randomUUID(),
-            title: "",
-            description: "",
-            url: "",
-            imageUrl: "",
+            title: '',
+            description: '',
+            url: '',
+            imageUrl: '',
         };
         onChange([...items, newItem]);
     }, [items, onChange]);
@@ -123,7 +123,7 @@ export function PortfolioReorder({ items, onChange }: PortfolioReorderProps) {
                         draggable
                         role="option"
                         aria-selected={focusedIndex === index}
-                        aria-label={`Portfolio item ${index + 1}: ${item.title || "Untitled"}. Use arrow keys to reorder.`}
+                        aria-label={`Portfolio item ${index + 1}: ${item.title || 'Untitled'}. Use arrow keys to reorder.`}
                         tabIndex={0}
                         onDragStart={(e) => handleDragStart(e, index)}
                         onDragOver={(e) => handleDragOver(e, index)}
@@ -132,12 +132,12 @@ export function PortfolioReorder({ items, onChange }: PortfolioReorderProps) {
                         onKeyDown={(e) => handleKeyDown(e, index)}
                         onFocus={() => setFocusedIndex(index)}
                         className={`border rounded-lg p-4 bg-background transition-all ${
-                            draggedIndex === index ? "opacity-50 scale-95" : ""
+                            draggedIndex === index ? 'opacity-50 scale-95' : ''
                         } ${
                             dragOverIndex === index && draggedIndex !== index
-                                ? "border-primary border-2"
-                                : ""
-                        } ${focusedIndex === index ? "ring-2 ring-ring" : ""}`}
+                                ? 'border-primary border-2'
+                                : ''
+                        } ${focusedIndex === index ? 'ring-2 ring-ring' : ''}`}
                     >
                         <div className="flex items-start gap-3">
                             <div
@@ -158,13 +158,13 @@ export function PortfolioReorder({ items, onChange }: PortfolioReorderProps) {
                                 <Input
                                     placeholder="Project title"
                                     value={item.title}
-                                    onChange={(e) => updateItem(index, "title", e.target.value)}
+                                    onChange={(e) => updateItem(index, 'title', e.target.value)}
                                 />
                                 <Input
                                     placeholder="Description"
                                     value={item.description}
                                     onChange={(e) =>
-                                        updateItem(index, "description", e.target.value)
+                                        updateItem(index, 'description', e.target.value)
                                     }
                                 />
                                 <div className="flex gap-2">
@@ -172,14 +172,14 @@ export function PortfolioReorder({ items, onChange }: PortfolioReorderProps) {
                                         placeholder="Project URL"
                                         value={item.url}
                                         onChange={(e) =>
-                                            updateItem(index, "url", e.target.value)
+                                            updateItem(index, 'url', e.target.value)
                                         }
                                     />
                                     <Input
                                         placeholder="Image URL"
                                         value={item.imageUrl}
                                         onChange={(e) =>
-                                            updateItem(index, "imageUrl", e.target.value)
+                                            updateItem(index, 'imageUrl', e.target.value)
                                         }
                                     />
                                 </div>
@@ -190,7 +190,7 @@ export function PortfolioReorder({ items, onChange }: PortfolioReorderProps) {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => removeItem(index)}
-                                aria-label={`Remove ${item.title || "item"}`}
+                                aria-label={`Remove ${item.title || 'item'}`}
                             >
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />

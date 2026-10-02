@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useMemo } from 'react';
 import {
   DataLoader,
   createCreatorReviewsLoader,
   createCreatorReputationLoader,
-} from "@/lib/dataloader";
+} from '@/lib/dataloader';
 
 interface DataLoaderContextType {
   creatorReviewsLoader: DataLoader<string, any>;
@@ -37,7 +37,7 @@ export function DataLoaderProvider({
 export function useDataLoaders() {
   const context = useContext(DataLoaderContext);
   if (!context) {
-    throw new Error("useDataLoaders must be used within DataLoaderProvider");
+    throw new Error('useDataLoaders must be used within DataLoaderProvider');
   }
   return context;
 }

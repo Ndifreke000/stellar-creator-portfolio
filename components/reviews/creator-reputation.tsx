@@ -54,7 +54,7 @@ function StarRow({ value, max = 5 }: { value: number; max?: number }) {
 
 function Histogram({
   aggregation,
-  title = "Rating breakdown"
+  title = 'Rating breakdown'
 }: {
   aggregation: ReputationAggregation;
   title?: string;
@@ -221,9 +221,9 @@ export function CreatorReputation({ creatorId }: { creatorId: string }) {
 
           <Button
             onClick={() => setShowReviewForm(!showReviewForm)}
-            variant={showReviewForm ? "outline" : "default"}
+            variant={showReviewForm ? 'outline' : 'default'}
           >
-            {showReviewForm ? "Cancel Review" : "Write a Review"}
+            {showReviewForm ? 'Cancel Review' : 'Write a Review'}
           </Button>
         </div>
 
@@ -296,7 +296,7 @@ export function CreatorReputation({ creatorId }: { creatorId: string }) {
 
           <Histogram
             aggregation={displayAggregation}
-            title={hasFilters ? "Filtered rating breakdown" : "Rating breakdown"}
+            title={hasFilters ? 'Filtered rating breakdown' : 'Rating breakdown'}
           />
 
           {/* Show overall stats when filtered */}

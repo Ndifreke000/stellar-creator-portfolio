@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { MotionConfig } from "framer-motion";
+import { MotionConfig } from 'framer-motion';
 
 /**
  * Applies the visitor's `prefers-reduced-motion` setting to every

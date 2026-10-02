@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useRef } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 import {
   trackConversion,
@@ -14,7 +14,7 @@ import {
   trackScrollDepth,
   trackSearch,
   trackSessionStart,
-} from "@/lib/analytics";
+} from '@/lib/analytics';
 
 type Props = {
   plausibleDomain: string;
@@ -28,7 +28,7 @@ export default function AnalyticsClient({ plausibleDomain: _ }: Props) {
 
   const fullPath = useMemo(() => {
     const query = searchParams?.toString();
-    return pathname + (query ? `?${query}` : "");
+    return pathname + (query ? `?${query}` : '');
   }, [pathname, searchParams]);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function AnalyticsClient({ plausibleDomain: _ }: Props) {
 
     trackPageview(
       fullPath,
-      typeof document !== "undefined" ? document.referrer : undefined,
+      typeof document !== 'undefined' ? document.referrer : undefined,
     );
     maybeTrackDetailViews(pathname);
     previousPath.current = fullPath;
@@ -56,7 +56,7 @@ export default function AnalyticsClient({ plausibleDomain: _ }: Props) {
       if (!pathname) return;
       const target = event.target as HTMLElement | null;
 
-      if (shouldTrackHeatmap(pathname) && typeof window !== "undefined") {
+      if (shouldTrackHeatmap(pathname) && typeof window !== 'undefined') {
         trackHeatmapClick(
           pathname,
           event.clientX / window.innerWidth,
@@ -81,10 +81,10 @@ export default function AnalyticsClient({ plausibleDomain: _ }: Props) {
       }
     };
 
-    if (typeof document !== "undefined") {
-      document.addEventListener("click", handleClick, { capture: true });
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', handleClick, { capture: true });
       return () =>
-        document.removeEventListener("click", handleClick, { capture: true });
+        document.removeEventListener('click', handleClick, { capture: true });
     }
   }, [pathname]);
 
@@ -108,21 +108,21 @@ export default function AnalyticsClient({ plausibleDomain: _ }: Props) {
       if (!element) return;
 
       if (element.dataset?.filterName) {
-        const value = (element as HTMLInputElement).value ?? "selected";
+        const value = (element as HTMLInputElement).value ?? 'selected';
         trackFilterUsage(
           element.dataset.filterName,
           value,
-          pathname || "unknown",
+          pathname || 'unknown',
         );
       }
     };
 
-    if (typeof document !== "undefined") {
-      document.addEventListener("submit", handleSubmit, true);
-      document.addEventListener("change", handleChange, true);
+    if (typeof document !== 'undefined') {
+      document.addEventListener('submit', handleSubmit, true);
+      document.addEventListener('change', handleChange, true);
       return () => {
-        document.removeEventListener("submit", handleSubmit, true);
-        document.removeEventListener("change", handleChange, true);
+        document.removeEventListener('submit', handleSubmit, true);
+        document.removeEventListener('change', handleChange, true);
       };
     }
   }, [pathname]);
@@ -130,7 +130,7 @@ export default function AnalyticsClient({ plausibleDomain: _ }: Props) {
   useEffect(() => {
     const handleScroll = () => {
       if (!pathname) return;
-      if (typeof window === "undefined" || typeof document === "undefined")
+      if (typeof window === 'undefined' || typeof document === 'undefined')
         return;
       const scrollHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -145,9 +145,9 @@ export default function AnalyticsClient({ plausibleDomain: _ }: Props) {
       });
     };
 
-    if (typeof window !== "undefined") {
-      window.addEventListener("scroll", handleScroll, { passive: true });
-      return () => window.removeEventListener("scroll", handleScroll);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      return () => window.removeEventListener('scroll', handleScroll);
     }
   }, [pathname]);
 
@@ -155,7 +155,7 @@ export default function AnalyticsClient({ plausibleDomain: _ }: Props) {
 }
 
 const shouldTrackHeatmap = (path: string) => {
-  return ["/", "/creators", "/bounties", "/search"].some((p) =>
+  return ['/', '/creators', '/bounties', '/search'].some((p) =>
     path.startsWith(p),
   );
 };
@@ -163,18 +163,18 @@ const shouldTrackHeatmap = (path: string) => {
 const maybeTrackDetailViews = (path: string) => {
   const creatorMatch = path.match(/\/creators?\/([^/?#]+)/i);
   if (creatorMatch?.[1]) {
-    trackCreatorOrBountyView("creator", creatorMatch[1]);
+    trackCreatorOrBountyView('creator', creatorMatch[1]);
     return;
   }
   const bountyMatch = path.match(/\/bounties?\/([^/?#]+)/i);
   if (bountyMatch?.[1]) {
-    trackCreatorOrBountyView("bounty", bountyMatch[1]);
+    trackCreatorOrBountyView('bounty', bountyMatch[1]);
   }
 };
 
 const collectFilters = (form: HTMLFormElement) => {
   const filters: Record<string, string> = {};
-  form.querySelectorAll<HTMLElement>("[data-filter-name]").forEach((el) => {
+  form.querySelectorAll<HTMLElement>('[data-filter-name]').forEach((el) => {
     const name = el.dataset.filterName;
     if (!name) return;
     const value =

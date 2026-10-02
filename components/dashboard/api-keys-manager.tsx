@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useCallback, useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Skeleton } from "@/components/ui/skeleton";
-import { trackEvent } from "@/lib/analytics/analytics";
-import { formatDate } from "@/lib/utils";
+} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Skeleton } from '@/components/ui/skeleton';
+import { trackEvent } from '@/lib/analytics/analytics';
+import { formatDate } from '@/lib/utils';
 
 /** Placeholder shown while the key list loads; mirrors the two sections below. */
 function ApiKeysSkeleton() {
@@ -49,14 +49,14 @@ interface ApiKeyRecord {
  */
 export function ApiKeysManager() {
   const [keys, setKeys] = useState<ApiKeyRecord[]>([]);
-  const [name, setName] = useState("");
-  const [scopes, setScopes] = useState<string[]>(["read-only"]);
-  const [expiryDays, setExpiryDays] = useState("90");
+  const [name, setName] = useState('');
+  const [scopes, setScopes] = useState<string[]>(['read-only']);
+  const [expiryDays, setExpiryDays] = useState('90');
   const [newKey, setNewKey] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadKeys = useCallback(async () => {
-    const res = await fetch("/api/developer/keys");
+    const res = await fetch('/api/developer/keys');
     if (res.ok) {
       const data = await res.json();
       setKeys(data.keys);
@@ -78,28 +78,28 @@ export function ApiKeysManager() {
 
   const createKey = async () => {
     const expiresAt =
-      expiryDays === "never"
+      expiryDays === 'never'
         ? undefined
         : new Date(Date.now() + Number(expiryDays) * 86400000).toISOString();
 
-    const res = await fetch("/api/developer/keys", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch('/api/developer/keys', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, scopes, expiresAt }),
     });
 
     if (res.ok) {
       const data = await res.json();
       setNewKey(data.rawKey);
-      setName("");
-      trackEvent("api_key_created", { scopes: scopes.join(",") });
+      setName('');
+      trackEvent('api_key_created', { scopes: scopes.join(',') });
       await loadKeys();
     }
   };
 
   const revokeKey = async (id: string) => {
-    await fetch(`/api/developer/keys/${id}`, { method: "DELETE" });
-    trackEvent("api_key_revoked", { id });
+    await fetch(`/api/developer/keys/${id}`, { method: 'DELETE' });
+    trackEvent('api_key_revoked', { id });
     await loadKeys();
   };
 
@@ -123,7 +123,7 @@ export function ApiKeysManager() {
         <div className="space-y-2">
           <Label>Permission scopes</Label>
           <div className="flex gap-4">
-            {(["read-only", "read-write"] as const).map((scope) => (
+            {(['read-only', 'read-write'] as const).map((scope) => (
               <label key={scope} className="flex items-center gap-2 text-sm">
                 <Checkbox
                   checked={scopes.includes(scope)}
@@ -172,7 +172,7 @@ export function ApiKeysManager() {
                 <div>
                   <p className="font-medium">{key.name}</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Scopes: {key.scopes.join(", ")} · Created{" "}
+                    Scopes: {key.scopes.join(', ')} · Created{' '}
                     {formatDate(key.createdAt, 'default')}
                     {key.lastUsedAt &&
                       ` · Last used ${formatDate(key.lastUsedAt, 'default')}`}

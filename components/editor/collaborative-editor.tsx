@@ -65,7 +65,7 @@ export function CollaborativeEditor({
   // Stable user identity for this session
   const user = useMemo(
     () => ({ name: randomName(), color: randomColor() }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     [],
   )
 
