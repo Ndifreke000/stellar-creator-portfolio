@@ -343,8 +343,8 @@ class PWAManager {
    * Track PWA events for analytics
    */
   private trackEvent(eventName: string, data?: Record<string, any>): void {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', `pwa_${eventName}`, data);
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', `pwa_${eventName}`, data);
     }
     console.log(`[PWA] Event: ${eventName}`, data);
   }
