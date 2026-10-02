@@ -103,15 +103,15 @@ cargo test
 
 ```bash
 pnpm run cli-checks     # frontend lint/i18n + backend clippy + contract clippy — run before pushing
-pnpm test               # vitest — unit tests AND the *.e2e.test.ts files under __tests__/
-                        # (vitest's default include pattern picks up both; there's no separate
-                        # command for just the *.e2e.test.ts subset)
-pnpm run test:e2e       # Playwright — testDir is ./tests (currently just tests/auth.e2e.ts),
-                        # a different suite from the vitest *.e2e.test.ts files above despite
-                        # the similar naming
+pnpm run typecheck      # tsc --noEmit over the web app
+pnpm test               # vitest — everything under __tests__/ plus *.test.ts(x) files
+                        # beside the code they cover
+pnpm run test:e2e       # Playwright — the specs in e2e/ (needs `pnpm exec playwright install`)
 ```
 
 There is no `test:ci` script — run `pnpm test` and `pnpm run test:e2e` separately.
+The mobile app has its own Jest suite under `mobile/`; the root vitest run does not
+include it.
 
 - Write tests as you code — happy path and edge cases
 - New frontend features that call out to an external flow (anchors, payment
