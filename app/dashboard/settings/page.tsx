@@ -1,8 +1,8 @@
-import { Settings } from "lucide-react";
+import { Settings } from 'lucide-react';
 
 export const metadata = {
-  title: "Settings | Tamgora Creators",
-  description: "Manage your account and workspace settings",
+  title: 'Settings | Tamgora Creators',
+  description: 'Manage your account and workspace settings',
 };
 
 export default function SettingsPage() {

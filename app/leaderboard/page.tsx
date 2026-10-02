@@ -1,7 +1,7 @@
-import { prisma } from "@/lib/prisma";
-import { Suspense } from "react";
-import { LeaderboardClient, type CreatorLeaderboardItem } from "@/components/analytics/leaderboard-client";
-import { getServerSession } from "next-auth/next";
+import { prisma } from '@/lib/prisma';
+import { Suspense } from 'react';
+import { LeaderboardClient, type CreatorLeaderboardItem } from '@/components/analytics/leaderboard-client';
+import { getServerSession } from 'next-auth/next';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // Refreshed hourly with Cache-Control: max-age=3600
@@ -20,7 +20,7 @@ export default async function LeaderboardPage() {
   // Fetch released escrows to compute earnings
   const releasedEscrows = await prisma.escrow.findMany({
     where: {
-      status: "released",
+      status: 'released',
     },
     select: {
       creatorId: true,

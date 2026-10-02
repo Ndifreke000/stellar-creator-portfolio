@@ -127,7 +127,7 @@ export default function AdminReportsPage() {
       addAuditLog(prev, 'report.remove', id, report.targetTitle, reason)
     );
     // In production, send in-app notification to creator here.
-    notify(`Content removed. Creator notified with reason.`);
+    notify('Content removed. Creator notified with reason.');
   }
 
   function escalate(id: string, reason: string) {

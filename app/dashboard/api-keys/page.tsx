@@ -1,10 +1,10 @@
-import { Suspense } from "react";
-import { ApiKeysManager } from "@/components/dashboard/api-keys-manager";
-import { ApiKeysSkeleton } from "@/components/ui/skeleton-group";
+import { Suspense } from 'react';
+import { ApiKeysManager } from '@/components/dashboard/api-keys-manager';
+import { ApiKeysSkeleton } from '@/components/ui/skeleton-group';
 
 export const metadata = {
-  title: "API Keys | Tamgora Creators",
-  description: "Manage developer API keys for third-party integrations",
+  title: 'API Keys | Tamgora Creators',
+  description: 'Manage developer API keys for third-party integrations',
 };
 
 export default function ApiKeysPage() {

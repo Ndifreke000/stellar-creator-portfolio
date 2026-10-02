@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getReviewsForCreatorsBatch } from "@/lib/services/review-service";
+import { NextRequest, NextResponse } from 'next/server';
+import { getReviewsForCreatorsBatch } from '@/lib/services/review-service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,14 +8,14 @@ export async function POST(request: NextRequest) {
 
     if (!Array.isArray(creatorIds) || creatorIds.length === 0) {
       return NextResponse.json(
-        { error: "creatorIds must be a non-empty array" },
+        { error: 'creatorIds must be a non-empty array' },
         { status: 400 },
       );
     }
 
     if (creatorIds.length > 100) {
       return NextResponse.json(
-        { error: "Maximum 100 creators per batch" },
+        { error: 'Maximum 100 creators per batch' },
         { status: 400 },
       );
     }
@@ -50,9 +50,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(results);
   } catch (error) {
-    console.error("Batch reputation fetch error:", error);
+    console.error('Batch reputation fetch error:', error);
     return NextResponse.json(
-      { error: "Failed to fetch reputation data" },
+      { error: 'Failed to fetch reputation data' },
       { status: 500 },
     );
   }

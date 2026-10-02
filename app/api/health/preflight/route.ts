@@ -9,52 +9,52 @@
  * Response: { success: boolean, endpoints: HealthEndpoint[], message?: string }
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { getPoolHealth, startProbing } from "@/lib/config/rpc-fallback";
-import { type NetworkName } from "@/lib/config/network";
+import { NextRequest, NextResponse } from 'next/server';
+import { getPoolHealth, startProbing } from '@/lib/config/rpc-fallback';
+import { type NetworkName } from '@/lib/config/network';
 
 interface HealthEndpoint {
   url: string;
   latencyMs: number;
   errorRate: number;
-  status: "healthy" | "degraded" | "unreachable";
+  status: 'healthy' | 'degraded' | 'unreachable';
 }
 
 interface PreflightResponse {
   success: boolean;
   endpoints: HealthEndpoint[];
-  poolStatus: "healthy" | "degraded" | "critical";
+  poolStatus: 'healthy' | 'degraded' | 'critical';
   message?: string;
 }
 
 /** Map numeric health metrics to human-readable status. */
-function getStatus(latencyMs: number, errorRate: number): HealthEndpoint["status"] {
-  if (latencyMs === Infinity || errorRate >= 0.5) return "unreachable";
-  if (latencyMs > 1000 || errorRate >= 0.2) return "degraded";
-  return "healthy";
+function getStatus(latencyMs: number, errorRate: number): HealthEndpoint['status'] {
+  if (latencyMs === Infinity || errorRate >= 0.5) return 'unreachable';
+  if (latencyMs > 1000 || errorRate >= 0.2) return 'degraded';
+  return 'healthy';
 }
 
 /** Derive overall pool health from individual endpoints. */
-function getPoolStatus(endpoints: HealthEndpoint[]): PreflightResponse["poolStatus"] {
-  const healthy = endpoints.filter((e) => e.status === "healthy").length;
+function getPoolStatus(endpoints: HealthEndpoint[]): PreflightResponse['poolStatus'] {
+  const healthy = endpoints.filter((e) => e.status === 'healthy').length;
   const total = endpoints.length;
 
   // Critical: less than 50% of endpoints healthy
-  if (healthy < total / 2) return "critical";
+  if (healthy < total / 2) return 'critical';
   // Degraded: at least one endpoint degraded or unreachable
-  if (endpoints.some((e) => e.status !== "healthy")) return "degraded";
-  return "healthy";
+  if (endpoints.some((e) => e.status !== 'healthy')) return 'degraded';
+  return 'healthy';
 }
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(req.url);
-    const network = (searchParams.get("network") || "mainnet") as NetworkName;
+    const network = (searchParams.get('network') || 'mainnet') as NetworkName;
 
     // Validate network param
-    if (!["mainnet", "testnet"].includes(network)) {
+    if (!['mainnet', 'testnet'].includes(network)) {
       return NextResponse.json(
-        { success: false, message: "Invalid network parameter" },
+        { success: false, message: 'Invalid network parameter' },
         { status: 400 },
       );
     }
@@ -75,20 +75,20 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json(
       {
-        success: poolStatus !== "critical",
+        success: poolStatus !== 'critical',
         endpoints,
         poolStatus,
         message:
-          poolStatus === "critical"
-            ? "All RPC endpoints are degraded or unreachable. Transaction submission may fail."
-            : poolStatus === "degraded"
-              ? "Some RPC endpoints are degraded. Retrying is recommended."
-              : "All RPC endpoints are healthy.",
+          poolStatus === 'critical'
+            ? 'All RPC endpoints are degraded or unreachable. Transaction submission may fail.'
+            : poolStatus === 'degraded'
+              ? 'Some RPC endpoints are degraded. Retrying is recommended.'
+              : 'All RPC endpoints are healthy.',
       } as PreflightResponse,
-      { status: poolStatus === "critical" ? 503 : 200 },
+      { status: poolStatus === 'critical' ? 503 : 200 },
     );
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
+    const message = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json(
       {
         success: false,
