@@ -170,6 +170,11 @@ describe('PushNotificationService', () => {
         },
       }));
 
+      // 150 batches would otherwise spend ~15s in the inter-batch pause,
+      // which is what this test is not about.
+      vi.spyOn(service as unknown as { delay: (ms: number) => Promise<void> }, 'delay')
+        .mockResolvedValue(undefined);
+
       // Should process large batches
       const results = await service.sendBatch(notifications);
       expect(results.length).toBeGreaterThan(0);
