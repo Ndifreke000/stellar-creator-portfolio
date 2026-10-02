@@ -1,5 +1,5 @@
 import { fetchCreatorProjects } from '@/lib/streaming/chunk-data';
-import { ProjectCard } from '@/components/project-card';
+import { ProjectCard } from '@/components/portfolio/project-card';
 import { ArrowRight } from 'lucide-react';
 
 export async function CreatorProjectsSection({ id }: { id: string }) {
