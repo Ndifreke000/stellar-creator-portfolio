@@ -7,8 +7,17 @@ import type { Bounty } from '@/lib/services/creators-data';
 
 const DIFFICULTIES = ['beginner', 'intermediate', 'advanced', 'expert'] as const;
 
+/**
+ * Fields the listing and apply modal need. Satisfied by both the static
+ * seed bounties and rows from the bounties.list tRPC query.
+ */
+type BountyListItem = Pick<Bounty, 'id' | 'title' | 'description' | 'budget' | 'tags' | 'difficulty'> & {
+  category: string | null;
+  applicants?: number;
+};
+
 interface ApplyModalProps {
-  bounty: Bounty;
+  bounty: BountyListItem;
   onClose: () => void;
 }
 
@@ -190,17 +199,19 @@ function ApplyModal({ bounty, onClose }: ApplyModalProps) {
 export default function BountiesClient({ bounties }: { bounties: Bounty[] }) {
   const [difficulty, setDifficulty] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
-  const [activeBounty, setActiveBounty] = useState<Bounty | null>(null);
+  const [activeBounty, setActiveBounty] = useState<BountyListItem | null>(null);
 
   // Use tRPC query for bounties
-  const bountiesQuery = trpc.bounties.list.useQuery({
-    take: 50,
-    status: difficulty ? (difficulty as any) : undefined,
-  });
+  const bountiesQuery = trpc.bounties.list.useQuery({ take: 50 });
 
-  const categories = Array.from(new Set((bountiesQuery.data?.bounties || bounties).map((b) => b.category)));
-  
-  const filtered = (bountiesQuery.data?.bounties || bounties).filter((b) => {
+  // Fall back to the server-provided list until (or unless) the query resolves.
+  const allBounties: BountyListItem[] = bountiesQuery.data?.bounties ?? bounties;
+
+  const categories = Array.from(
+    new Set(allBounties.map((b) => b.category).filter((c): c is string => Boolean(c))),
+  );
+
+  const filtered = allBounties.filter((b) => {
     if (difficulty && b.difficulty !== difficulty) return false;
     if (category && b.category !== category) return false;
     return true;
@@ -298,7 +309,9 @@ export default function BountiesClient({ bounties }: { bounties: Bounty[] }) {
                     ))}
                   </div>
                   <div className="flex items-center justify-between pt-2">
-                    <span className="text-xs text-muted-foreground">{bounty.applicants} applicants</span>
+                    <span className="text-xs text-muted-foreground">
+                      {bounty.applicants !== undefined ? `${bounty.applicants} applicants` : ''}
+                    </span>
                     <Button size="sm" onClick={() => setActiveBounty(bounty)} aria-label={`Apply to ${bounty.title}`}>Apply Now</Button>
                   </div>
                 </div>
