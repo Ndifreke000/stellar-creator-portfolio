@@ -135,8 +135,8 @@ function ApplyModal({ bounty, onClose }: ApplyModalProps) {
             <p className="text-xs text-muted-foreground">Escrow ID: {success.escrowId} · TX: {success.txHash}</p>
           </div>
         ) : (
-          {/* noValidate: validation is done in handleSubmit so errors reach the role="alert" region */}
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
+            {/* noValidate: handleSubmit validates so errors reach the role="alert" region */}
             <div>
               <label htmlFor="wallet-address" className="block text-sm font-medium text-foreground mb-1">Stellar Wallet Address</label>
               <input 
