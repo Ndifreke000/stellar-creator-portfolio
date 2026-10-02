@@ -31,7 +31,7 @@ vi.mock('@/server/services/tracing', () => ({
   tracingMiddleware: ({ next }: any) => next(),
 }));
 
-vi.mock('@/services/api/stellar/client', () => ({
+vi.mock('@/server/stellar/client', () => ({
   CircuitOpenError: class CircuitOpenError extends Error {},
 }));
 

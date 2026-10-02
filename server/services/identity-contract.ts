@@ -6,8 +6,8 @@
  */
 
 import { Keypair } from '@stellar/stellar-sdk';
-import { contractService } from '@/services/api/stellar/contract';
-import { LocalSigner } from '@/services/api/stellar/types';
+import { contractService } from '@/server/stellar/contract';
+import { LocalSigner } from '@/server/stellar/types';
 import { getSecret } from '@/server/services/kms';
 
 function identityContractId(): string {

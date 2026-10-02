@@ -17,7 +17,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { tracingMiddleware } from '@/server/services/tracing';
-import { CircuitOpenError } from '@/services/api/stellar/client';
+import { CircuitOpenError } from '@/server/stellar/client';
 import {
   checkRate,
   rateLimitKey,

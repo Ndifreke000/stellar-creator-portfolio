@@ -13,9 +13,9 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import { stellarClient } from "@/services/api/stellar/client";
-import { contractService } from "@/services/api/stellar/contract";
-import type { Signer } from "@/services/api/stellar/types";
+import { stellarClient } from "@/server/stellar/client";
+import { contractService } from "@/server/stellar/contract";
+import type { Signer } from "@/server/stellar/types";
 import {
   acquireSequence,
   markSequenceUsed,
@@ -60,7 +60,7 @@ const stats: DrainerStats = {
 // synthesised string, which meant every queued transaction was marked
 // `confirmed` with a fake hash and nothing was ever submitted.
 //
-// Both now go through `services/api/stellar`, which is already wrapped in the
+// Both now go through `server/stellar`, which is already wrapped in the
 // shared circuit breaker — a raw `new rpc.Server(...)` here would bypass it and
 // let the drainer hammer a node that every other caller has already backed off
 // from.

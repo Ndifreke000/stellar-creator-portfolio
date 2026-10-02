@@ -268,6 +268,6 @@ export class StellarCircuitBreaker {
 
 /**
  * Singleton circuit breaker for Stellar RPC.
- * Import this in `services/api/stellar/client.ts` and wrap every `rpc.*` call.
+ * Import this in `server/stellar/client.ts` and wrap every `rpc.*` call.
  */
 export const stellarCircuitBreaker = new StellarCircuitBreaker('stellar_rpc');
