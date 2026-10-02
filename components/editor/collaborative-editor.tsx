@@ -9,7 +9,7 @@
  * - Renders a full TipTap rich-text editor with starter-kit formatting
  */
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Collaboration from '@tiptap/extension-collaboration'
@@ -49,6 +49,16 @@ interface CollaborativeEditorProps {
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
+interface CollabSession {
+  ydoc: Y.Doc
+  provider: WebsocketProvider
+}
+
+interface CollabUser {
+  name: string
+  color: string
+}
+
 export function CollaborativeEditor({
   docId,
   wsUrl,
@@ -63,41 +73,73 @@ export function CollaborativeEditor({
     'ws://localhost:1234'
 
   // Stable user identity for this session
-  const user = useMemo(
-    () => ({ name: randomName(), color: randomColor() }),
-     
-    [],
-  )
+  const [user] = useState<CollabUser>(() => ({ name: randomName(), color: randomColor() }))
 
   // Yjs document & provider – both scoped to docId so they are fully
   // destroyed and recreated whenever the document changes, preventing leaks.
-  const ydocRef = useRef<Y.Doc | null>(null)
-  const providerRef = useRef<WebsocketProvider | null>(null)
+  // They are created in an effect (they open a WebSocket) and kept in state
+  // so the editor below is only ever configured with live instances.
+  const [session, setSession] = useState<CollabSession | null>(null)
 
   useEffect(() => {
-    // Create a fresh Y.Doc for this docId
     const ydoc = new Y.Doc()
-    ydocRef.current = ydoc
-
     const provider = new WebsocketProvider(serverUrl, docId, ydoc)
-    providerRef.current = provider
 
     // Broadcast our presence
     provider.awareness.setLocalStateField('user', user)
+    setSession({ ydoc, provider })
 
     return () => {
-      // Destroy provider first (closes WS + clears awareness)
+      setSession(null)
+      // Destroy provider first (closes WS + clears awareness), then the
+      // Y.Doc to release all CRDT state and event listeners.
       provider.destroy()
-      providerRef.current = null
-
-      // Destroy the Y.Doc to release all CRDT state and event listeners
       ydoc.destroy()
-      ydocRef.current = null
     }
-    // Re-connect only when docId or server changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [docId, serverUrl])
+  }, [docId, serverUrl, user])
 
+  if (!session) {
+    return (
+      <div
+        className={`collaborative-editor ${className}`}
+        aria-busy="true"
+      >
+        <div className="min-h-[200px] rounded-md border border-border bg-muted/40 animate-pulse" />
+      </div>
+    )
+  }
+
+  return (
+    <EditorSurface
+      // Remount when the document changes so TipTap binds to the new Y.Doc.
+      key={session.ydoc.guid}
+      session={session}
+      user={user}
+      initialContent={initialContent}
+      onChange={onChange}
+      readOnly={readOnly}
+      className={className}
+    />
+  )
+}
+
+interface EditorSurfaceProps {
+  session: CollabSession
+  user: CollabUser
+  initialContent?: string
+  onChange?: (html: string) => void
+  readOnly: boolean
+  className: string
+}
+
+function EditorSurface({
+  session,
+  user,
+  initialContent,
+  onChange,
+  readOnly,
+  className,
+}: EditorSurfaceProps) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -105,10 +147,10 @@ export function CollaborativeEditor({
         history: false,
       }),
       Collaboration.configure({
-        document: ydocRef.current,
+        document: session.ydoc,
       }),
       CollaborationCursor.configure({
-        provider: providerRef.current!,
+        provider: session.provider,
         user,
       }),
     ],
@@ -118,17 +160,6 @@ export function CollaborativeEditor({
       onChange?.(editor.getHTML())
     },
   })
-
-  // Keep CollaborationCursor provider in sync after mount
-  useEffect(() => {
-    if (!editor || !providerRef.current) return
-    const cursorExt = editor.extensionManager.extensions.find(
-      (e) => e.name === 'collaborationCursor',
-    )
-    if (cursorExt) {
-      cursorExt.options.provider = providerRef.current
-    }
-  }, [editor])
 
   return (
     <div className={`collaborative-editor ${className}`}>
