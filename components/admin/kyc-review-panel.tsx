@@ -35,10 +35,6 @@ export function KYCReviewPanel() {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
 
-  useEffect(() => {
-    load();
-  }, []);
-
   async function load() {
     try {
       setLoading(true);
@@ -59,6 +55,12 @@ export function KYCReviewPanel() {
     setToast(message);
     setTimeout(() => setToast(null), 4000);
   }
+
+  useEffect(() => {
+    void load();
+    // Load once on mount; load() only touches state setters.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function review(submissionId: string, decision: 'approve' | 'reject') {
     const reason = decision === 'reject' ? prompt('Reason for rejection:') : undefined;
