@@ -3,7 +3,7 @@
  *
  * Every call that hits the Stellar RPC node is routed through
  * `stellarCircuitBreaker.execute()` from
- * `backend/services/stellar-circuit-breaker.ts`.
+ * `server/services/stellar-circuit-breaker.ts`.
  *
  * Circuit breaker configuration (matches Rust `CircuitBreakerConfig::for_rpc()`):
  *   - failure_threshold : 5 consecutive failures → OPEN
@@ -16,12 +16,12 @@
  */
 
 import { rpc, Networks, type Account } from '@stellar/stellar-sdk';
-import { getSecret } from '@/backend/services/kms';
+import { getSecret } from '@/server/services/kms';
 import {
   stellarCircuitBreaker,
   CircuitOpenError,
   type CircuitState,
-} from '@/backend/services/stellar-circuit-breaker';
+} from '@/server/services/stellar-circuit-breaker';
 import type { StellarConfig } from './types';
 
 // Re-export so callers that need to catch it don't need a second import path

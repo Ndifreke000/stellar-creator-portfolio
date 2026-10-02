@@ -4,7 +4,7 @@ import {
   parsePathPaymentOperation,
   fetchPathPaymentOperations,
   type HorizonOperationRecord,
-} from '@/backend/services/corridor-analytics';
+} from '@/server/services/corridor-analytics';
 import recordedFixture from './fixtures/horizon-path-payments.json';
 
 describe('Corridor Analytics Service', () => {

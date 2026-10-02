@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { protectedProcedure, publicProcedure, rateLimit, router } from './trpc';
-import { emitEvent } from '@/backend/services/events';
-import { writeAuditLog } from '@/backend/services/audit';
+import { emitEvent } from '@/server/services/events';
+import { writeAuditLog } from '@/server/services/audit';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { creatorCardSelect, toCreator } from './creator-mapper';

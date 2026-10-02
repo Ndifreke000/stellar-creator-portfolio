@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { aggregateCorridorPayments } from '@/backend/services/corridor-analytics';
+import { aggregateCorridorPayments } from '@/server/services/corridor-analytics';
 
 /**
  * POST /api/admin/cron/corridor-aggregation

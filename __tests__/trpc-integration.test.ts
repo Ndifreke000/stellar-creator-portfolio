@@ -27,7 +27,7 @@ vi.mock('@/lib/prisma', () => ({
   },
 }));
 
-vi.mock('@/backend/services/tracing', () => ({
+vi.mock('@/server/services/tracing', () => ({
   tracingMiddleware: ({ next }: any) => next(),
 }));
 
@@ -44,13 +44,13 @@ vi.mock('jsonwebtoken', () => ({
 // Partial mocks: only the side-effecting entry points are replaced, so the
 // pure helpers these suites also exercise (hashIp, sanitisePayload, the
 // webhook registry) stay real.
-vi.mock('@/backend/services/events', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/backend/services/events')>()),
+vi.mock('@/server/services/events', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/server/services/events')>()),
   emitEvent: vi.fn(),
 }));
 
-vi.mock('@/backend/services/audit', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/backend/services/audit')>()),
+vi.mock('@/server/services/audit', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/server/services/audit')>()),
   writeAuditLog: vi.fn().mockResolvedValue({ id: 'audit-1' }),
 }));
 
@@ -259,7 +259,7 @@ describe('Bounties list input — cursor pagination & filters (Issue #1332)', ()
 
 describe('Audit service integration (Issue #1333)', () => {
   it('writeAuditLog is callable with correct shape', async () => {
-    const { writeAuditLog } = await import('@/backend/services/audit');
+    const { writeAuditLog } = await import('@/server/services/audit');
 
     await writeAuditLog({
       userId: 'user-1',
@@ -279,7 +279,7 @@ describe('Audit service integration (Issue #1333)', () => {
   });
 
   it('sanitises secret fields before persistence', async () => {
-    const { sanitisePayload } = await import('@/backend/services/audit');
+    const { sanitisePayload } = await import('@/server/services/audit');
     const result = sanitisePayload({
       title: 'Test',
       password: 'secret123',
@@ -294,7 +294,7 @@ describe('Audit service integration (Issue #1333)', () => {
   });
 
   it('hashIp produces consistent deterministic output', async () => {
-    const { hashIp } = await import('@/backend/services/audit');
+    const { hashIp } = await import('@/server/services/audit');
 
     const hash1 = hashIp('192.168.1.100');
     const hash2 = hashIp('192.168.1.100');
@@ -306,7 +306,7 @@ describe('Audit service integration (Issue #1333)', () => {
   });
 
   it('hashIp returns null for empty/null IP', async () => {
-    const { hashIp } = await import('@/backend/services/audit');
+    const { hashIp } = await import('@/server/services/audit');
     expect(hashIp(null)).toBeNull();
     expect(hashIp(undefined)).toBeNull();
     expect(hashIp('')).toBeNull();
@@ -317,7 +317,7 @@ describe('Audit service integration (Issue #1333)', () => {
 
 describe('Domain Event Bus (Issue #1335)', () => {
   it('emitEvent is called with correct BountyCreated payload', async () => {
-    const { emitEvent } = await import('@/backend/services/events');
+    const { emitEvent } = await import('@/server/services/events');
 
     emitEvent('BountyCreated', {
       bountyId: 'b-1',
@@ -338,7 +338,7 @@ describe('Domain Event Bus (Issue #1335)', () => {
 
   it('subscribeWebhook and unsubscribeWebhook work on the real bus', async () => {
     // Use the real (non-mocked) bus for this test
-    const eventsModule = await import('@/backend/services/events');
+    const eventsModule = await import('@/server/services/events');
     const { subscribeWebhook, unsubscribeWebhook, _getWebhookRegistry } =
       eventsModule as any;
 

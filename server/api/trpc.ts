@@ -16,7 +16,7 @@ import { TRPCError, initTRPC } from '@trpc/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import { prisma } from '@/lib/prisma';
-import { tracingMiddleware } from '@/backend/services/tracing';
+import { tracingMiddleware } from '@/server/services/tracing';
 import { CircuitOpenError } from '@/services/api/stellar/client';
 import {
   checkRate,

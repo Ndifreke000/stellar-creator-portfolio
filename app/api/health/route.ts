@@ -25,7 +25,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { stellarCircuitBreaker } from '@/backend/services/stellar-circuit-breaker';
+import { stellarCircuitBreaker } from '@/server/services/stellar-circuit-breaker';
 
 export const runtime = 'nodejs';
 // Disable response caching so probes always see the live circuit state

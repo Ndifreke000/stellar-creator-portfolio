@@ -1,6 +1,6 @@
 /**
  * Unit tests for the Stellar RPC circuit breaker
- * (backend/services/stellar-circuit-breaker.ts)
+ * (server/services/stellar-circuit-breaker.ts)
  *
  * Acceptance criteria verified here:
  *   ✓ 5 consecutive RPC failures open the circuit
@@ -35,7 +35,7 @@ vi.mock('@opentelemetry/api', () => ({
 
 // ── Mock tracing helpers ───────────────────────────────────────────────────
 
-vi.mock('@/backend/services/tracing', () => ({
+vi.mock('@/server/services/tracing', () => ({
   withSpan: async (_name: string, fn: (span: unknown) => Promise<unknown>) => {
     // Execute fn with a minimal stub span
     return fn({
@@ -54,7 +54,7 @@ vi.mock('@/backend/services/tracing', () => ({
 import {
   StellarCircuitBreaker,
   CircuitOpenError,
-} from '@/backend/services/stellar-circuit-breaker';
+} from '@/server/services/stellar-circuit-breaker';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 

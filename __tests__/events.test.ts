@@ -18,7 +18,7 @@ import bus, {
   subscribeWebhook,
   unsubscribeWebhook,
   _getWebhookRegistry,
-} from '@/backend/services/events';
+} from '@/server/services/events';
 
 // Reset between tests by removing all listeners
 beforeEach(() => {

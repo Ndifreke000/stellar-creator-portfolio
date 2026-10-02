@@ -316,7 +316,7 @@ export type MutationHandler<T = unknown> = (
  *
  * Usage in route.ts:
  * ```ts
- * import { createAuditInterceptor } from '@/backend/services/audit';
+ * import { createAuditInterceptor } from '@/server/services/audit';
  *
  * async function handler(req: Request) { ... }
  *

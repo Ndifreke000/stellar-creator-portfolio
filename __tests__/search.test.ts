@@ -1,5 +1,5 @@
 /**
- * Tests for backend/services/search.ts  (#638)
+ * Tests for server/services/search.ts  (#638)
  *
  * Tests cover:
  *  - generateEmbedding() — mock fallback, deterministic output, correct dims
@@ -58,7 +58,7 @@ import {
   ensureIndex,
   _resetElasticClientForTests,
   type CreatorDocument,
-} from '@/backend/services/search';
+} from '@/server/services/search';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

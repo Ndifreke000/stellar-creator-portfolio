@@ -7,15 +7,15 @@ vi.setConfig({ testTimeout: 30000 });
  * Unit tests, integration tests, and performance tests
  */
 
-import { PushNotificationService } from '@/backend/services/notifications/push-service';
+import { PushNotificationService } from '@/server/services/notifications/push-service';
 import {
   validateNotificationPayload,
   sanitizeContent,
   generateMessageId,
   calculateRetryDelay,
   DEFAULT_RETRY_CONFIG,
-} from '@/backend/services/notifications/notification-validators';
-import { NotificationChannel, UserPreferences } from '@/backend/services/notifications/notification-types';
+} from '@/server/services/notifications/notification-validators';
+import { NotificationChannel, UserPreferences } from '@/server/services/notifications/notification-types';
 
 describe('PushNotificationService', () => {
   let service: PushNotificationService;

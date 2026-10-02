@@ -1,5 +1,5 @@
 /**
- * Tests for backend/services/tracing.ts  (#639)
+ * Tests for server/services/tracing.ts  (#639)
  *
  * Tests cover:
  *  - SDK initialization guard (no double-init)
@@ -100,7 +100,7 @@ import {
   addEvent,
   recordException,
   getTraceparent,
-} from '@/backend/services/tracing';
+} from '@/server/services/tracing';
 
 beforeEach(() => {
   vi.clearAllMocks();

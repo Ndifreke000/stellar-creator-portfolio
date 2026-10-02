@@ -11,7 +11,7 @@
  *  - Should delegate heavy work to queues/workers rather than doing it inline.
  */
 
-import { onEvent, onAnyEvent } from '@/backend/services/events';
+import { onEvent, onAnyEvent } from '@/server/services/events';
 
 // ── BountyCreated ─────────────────────────────────────────────────────────────
 

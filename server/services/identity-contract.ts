@@ -8,7 +8,7 @@
 import { Keypair } from '@stellar/stellar-sdk';
 import { contractService } from '@/services/api/stellar/contract';
 import { LocalSigner } from '@/services/api/stellar/types';
-import { getSecret } from '@/backend/services/kms';
+import { getSecret } from '@/server/services/kms';
 
 function identityContractId(): string {
   const contractId = process.env.IDENTITY_CONTRACT_ID;

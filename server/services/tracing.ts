@@ -170,7 +170,7 @@ export interface TracingMiddlewareContext {
  *
  * Usage in `server/api/trpc.ts`:
  * ```ts
- * import { tracingMiddleware } from '@/backend/services/tracing';
+ * import { tracingMiddleware } from '@/server/services/tracing';
  *
  * const t = initTRPC.context<Context>().create();
  * export const publicProcedure = t.procedure.use(tracingMiddleware);
@@ -242,7 +242,7 @@ export function tracingMiddleware<T extends TracingMiddlewareContext>(
  *
  * Usage in `lib/prisma.ts`:
  * ```ts
- * import { createPrismaTracingMiddleware } from '@/backend/services/tracing';
+ * import { createPrismaTracingMiddleware } from '@/server/services/tracing';
  *
  * prisma.$use(createPrismaTracingMiddleware());
  * ```

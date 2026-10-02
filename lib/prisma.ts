@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { createPrismaTracingMiddleware } from '@/backend/services/tracing';
+import { createPrismaTracingMiddleware } from '@/server/services/tracing';
 
 function buildPrismaClient(): PrismaClient {
   // When PgBouncer is in use, DATABASE_URL points to the pooler (port 6432).

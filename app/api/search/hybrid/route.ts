@@ -16,7 +16,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { hybridSearch, bountyViewSearch, checkClusterHealth } from '@/backend/services/search';
+import { hybridSearch, bountyViewSearch, checkClusterHealth } from '@/server/services/search';
 
 export const runtime = 'nodejs';
 

@@ -4,11 +4,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { pushService, type PushPayload } from './push-service';
-import { validateNotificationPayload, sanitizeContent } from './notification-validators';
-import type { UserPreferences } from './notification-types';
-import { rateLimit } from './rate-limiter';
-import { logNotification, trackDelivery } from './notification-logger';
+import { pushService, type PushPayload } from '@/server/services/notifications/push-service';
+import { validateNotificationPayload, sanitizeContent } from '@/server/services/notifications/notification-validators';
+import type { UserPreferences } from '@/server/services/notifications/notification-types';
+import { rateLimit } from '@/server/services/notifications/rate-limiter';
+import { logNotification, trackDelivery } from '@/server/services/notifications/notification-logger';
 import { prisma } from '@/lib/prisma';
 import { NotificationStatus } from '@prisma/client';
 

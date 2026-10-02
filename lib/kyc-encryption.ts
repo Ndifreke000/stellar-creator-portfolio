@@ -9,7 +9,7 @@
  */
 
 import { randomBytes, createCipheriv, createDecipheriv } from 'crypto';
-import { getSecret } from '@/backend/services/kms';
+import { getSecret } from '@/server/services/kms';
 
 const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 12; // 96-bit IV recommended for GCM

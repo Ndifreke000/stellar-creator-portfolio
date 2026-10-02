@@ -99,7 +99,7 @@ ONESIGNAL_API_KEY=your-api-key
 
 ### 3. Add to Your App
 ```typescript
-import { pushService } from '@/backend/services/notifications/push-service';
+import { pushService } from '@/server/services/notifications/push-service';
 
 // Start queue processor
 pushService.startQueueProcessor();

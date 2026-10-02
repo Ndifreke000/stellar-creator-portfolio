@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { createHash } from 'crypto';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/prisma';
-import { verifyKycOnChain } from '@/backend/services/identity-contract';
+import { verifyKycOnChain } from '@/server/services/identity-contract';
 
 /**
  * POST /api/admin/kyc/[id]/review
