@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useId, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Menu, X } from 'lucide-react';
-import { useIsMobile } from '@/components/ui/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
 export interface SidebarItem {
