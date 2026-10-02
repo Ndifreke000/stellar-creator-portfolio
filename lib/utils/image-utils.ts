@@ -38,7 +38,7 @@ export function buildSizes(config?: ResponsiveSizeConfig): ImageProps['sizes'] {
   `.replace(/\s+/g, ' ').trim();
 }
 
-export function preferredFormats(preferAvif = true): NonNullable<ImageProps['formats']> {
+export function preferredFormats(preferAvif = true): Array<'image/avif' | 'image/webp'> {
   return preferAvif ? ['image/avif', 'image/webp'] : ['image/webp'];
 }
 
