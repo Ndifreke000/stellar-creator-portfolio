@@ -1,9 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react-native';
 
 // --- Mocks ---
 
-const mockPromptAsync = vi.fn();
+const mockPromptAsync = jest.fn();
 const mockAuthRequest = {
   iosClientId: 'test-ios',
   androidClientId: 'test-android',
@@ -13,28 +12,28 @@ const mockAuthRequest = {
 // Track the response that will be returned by useAuthRequest
 let mockAuthResponse: any = null;
 
-vi.mock('expo-auth-session/providers/google', () => ({
-  useAuthRequest: vi.fn(() => [
+jest.mock('expo-auth-session/providers/google', () => ({
+  useAuthRequest: jest.fn(() => [
     mockAuthRequest,
     mockAuthResponse,
     mockPromptAsync,
   ]),
 }));
 
-vi.mock('expo-web-browser', () => ({
-  maybeCompleteAuthSession: vi.fn(),
+jest.mock('expo-web-browser', () => ({
+  maybeCompleteAuthSession: jest.fn(),
 }));
 
 // Mock global fetch
-const mockFetch = vi.fn();
+const mockFetch = jest.fn();
 global.fetch = mockFetch as any;
 
 // --- Import after mocks ---
-import { useGoogleAuth, GoogleAuthUser } from '@/mobile/src/hooks/useGoogleAuth';
+import { useGoogleAuth, GoogleAuthUser } from '../useGoogleAuth';
 
 describe('useGoogleAuth', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockAuthResponse = null;
     mockPromptAsync.mockReset();
     mockFetch.mockReset();
