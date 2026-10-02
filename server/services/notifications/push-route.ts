@@ -1,6 +1,12 @@
 /**
- * POST /api/notifications/push
- * Send push notifications with validation and error handling
+ * Push notification route handlers (send, batch send, status update, health).
+ *
+ * NOT MOUNTED, deliberately. Do not move this file under app/api until:
+ *   - validateRequest() actually verifies the bearer token. Today it only
+ *     checks that an Authorization header is present, so any caller could
+ *     send a notification to any user.
+ *   - PATCH authenticates the caller and checks they own the notification;
+ *     it also expects an [id] route param that a /push route does not have.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
