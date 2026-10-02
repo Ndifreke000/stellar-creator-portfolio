@@ -85,9 +85,9 @@ async function fetchSearches(): Promise<TopItem[]> {
   return data.results.map((r: any) => ({ label: r["event:query"] || "unknown", value: r.visitors || 0 }));
 }
 
-function requireAdmin() {
+async function requireAdmin() {
   if (!ADMIN_TOKEN) return;
-  const cookieToken = cookies().get("admin-dashboard")?.value;
+  const cookieToken = (await cookies()).get("admin-dashboard")?.value;
   if (cookieToken !== ADMIN_TOKEN) redirect("/");
 }
 
@@ -211,8 +211,8 @@ async function SearchesSection() {
 
 // ── Page ──────────────────────────────────────────────────────────────────
 
-export default function AnalyticsPage() {
-  requireAdmin();
+export default async function AnalyticsPage() {
+  await requireAdmin();
 
   return (
     <main style={styles.page}>
