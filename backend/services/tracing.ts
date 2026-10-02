@@ -168,7 +168,7 @@ export interface TracingMiddlewareContext {
 /**
  * tRPC middleware that creates a root span for every procedure call.
  *
- * Usage in `backend/src/trpc-setup.ts`:
+ * Usage in `server/api/trpc.ts`:
  * ```ts
  * import { tracingMiddleware } from '@/backend/services/tracing';
  *

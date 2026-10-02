@@ -23,7 +23,7 @@ import {
   rateLimitKey,
   rateLimitMiddleware,
   RateLimitExceededError,
-} from '@/backend/src/rateLimit';
+} from '@/server/api/rate-limit';
 import jwt from 'jsonwebtoken';
 import { getJwtSecret } from './jwt-secret';
 

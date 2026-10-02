@@ -55,8 +55,8 @@ vi.mock('@/backend/services/audit', async (importOriginal) => ({
 }));
 
 import jwt from 'jsonwebtoken';
-import { createContext } from '@/backend/src/trpc-setup';
-import type { AppRouter } from '@/backend/src/router';
+import { createContext } from '@/server/api/trpc';
+import type { AppRouter } from '@/server/api/router';
 import { prisma } from '@/lib/prisma';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -92,7 +92,7 @@ describe('tRPC Infrastructure — Issue #1331', () => {
     it('should export AppRouter type (compile-time check)', async () => {
       // If this file compiles, the type is correctly exported.
       // Runtime assertion: the router module must export the type.
-      const routerModule = await import('@/backend/src/router');
+      const routerModule = await import('@/server/api/router');
       expect(routerModule).toHaveProperty('appRouter');
     });
   });

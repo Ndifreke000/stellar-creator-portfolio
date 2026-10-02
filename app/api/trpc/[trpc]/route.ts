@@ -11,8 +11,8 @@
  */
 
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
-import { appRouter } from '@/backend/src/router';
-import { createContext } from '@/backend/src/trpc-setup';
+import { appRouter } from '@/server/api/router';
+import { createContext } from '@/server/api/trpc';
 import { initStellarClient } from '@/services/api/stellar/client';
 import { NextRequest } from 'next/server';
 

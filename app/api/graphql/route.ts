@@ -5,10 +5,10 @@ import {
   type GraphQLSchema,
 } from 'graphql';
 import { NextRequest, NextResponse } from 'next/server';
-import { typeDefs } from '@/backend/src/graphql/schema';
-import { resolvers } from '@/backend/src/graphql/resolvers';
-import { createGraphQLContext } from '@/backend/src/graphql/context';
-import { checkRateLimit, RateLimitError } from '@/backend/src/graphql/rate-limit';
+import { typeDefs } from '@/server/graphql/schema';
+import { resolvers } from '@/server/graphql/resolvers';
+import { createGraphQLContext } from '@/server/graphql/context';
+import { checkRateLimit, RateLimitError } from '@/server/graphql/rate-limit';
 
 let schema: GraphQLSchema;
 

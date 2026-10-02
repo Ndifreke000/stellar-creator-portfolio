@@ -8,7 +8,7 @@
 import { createTRPCReact } from '@trpc/react-query';
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import { QueryClient } from '@tanstack/react-query';
-import type { AppRouter } from '@/backend/src/router';
+import type { AppRouter } from '@/server/api/router';
 
 // ─── tRPC React Hooks ─────────────────────────────────────────────────────────
 

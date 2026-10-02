@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { protectedProcedure, publicProcedure, rateLimit, router } from './trpc-setup';
+import { protectedProcedure, publicProcedure, rateLimit, router } from './trpc';
 import { emitEvent } from '@/backend/services/events';
 import { writeAuditLog } from '@/backend/services/audit';
 import type { Prisma } from '@prisma/client';

@@ -1,4 +1,4 @@
-import { checkRate } from "./rateLimit";
+import { checkRate } from "./rate-limit";
 import type { Request, Response, NextFunction } from "express";
 
 // Express-style middleware. Applies stricter limits for unauthenticated users.

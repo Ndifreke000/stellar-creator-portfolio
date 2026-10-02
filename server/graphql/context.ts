@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
-import { getJwtSecret } from '../jwt-secret';
+import { getJwtSecret } from '@/server/api/jwt-secret';
 import { hashApiKey } from '@/lib/api-keys';
-import { checkRateLimit, RateLimitResult } from '@/backend/src/rateLimit';
+import { checkRateLimit, RateLimitResult } from '@/server/api/rate-limit';
 
 export interface GraphQLContext {
   req: NextRequest;
