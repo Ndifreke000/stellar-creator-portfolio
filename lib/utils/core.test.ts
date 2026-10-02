@@ -11,7 +11,7 @@ import {
   parseBountyStatus,
   formatFileSize,
   shortenAddress,
-} from './utils';
+} from './core';
 
 describe('formatCurrency', () => {
   it('formats USD by default', () => {
