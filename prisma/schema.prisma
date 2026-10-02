@@ -824,3 +824,21 @@ model Project {
   @@index([creatorId])
   @@index([category])
 }
+
+/// Cross-border payment corridor analytics for Stellar PathPayment
+/// operations, aggregated into 5-minute period buckets.
+model CorridorPayment {
+  id               String   @id @default(cuid())
+  sourceCurrency   String
+  destCurrency     String
+  volume           BigInt
+  transactionCount Int
+  periodBucket     DateTime
+  createdAt        DateTime @default(now())
+
+  @@unique([sourceCurrency, destCurrency, periodBucket])
+  @@index([sourceCurrency])
+  @@index([destCurrency])
+  @@index([periodBucket])
+  @@index([sourceCurrency, destCurrency])
+}
