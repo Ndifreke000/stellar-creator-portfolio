@@ -1,59 +1,81 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
+import { Keypair } from '@stellar/stellar-sdk';
 
-// Mock next/link so it renders a plain <a>
-vi.mock('next/link', () => ({ default: ({ children, href }: { children: React.ReactNode; href: string }) => <a href={href}>{children}</a> }));
-// Mock layout components to keep tests focused
-vi.mock('@/components/header', () => ({ Header: () => <header data-testid="header" /> }));
-vi.mock('@/components/footer', () => ({ Footer: () => <footer data-testid="footer" /> }));
-// Mock API client so tests don't make real network calls
-vi.mock('@/lib/api-client', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/lib/api-client')>();
+// BountiesClient talks to the API through tRPC hooks. The list query stays
+// unresolved so the component renders the bounties passed as props, and the
+// escrow mutation resolves on the next microtask so the pending and success
+// states can both be observed.
+vi.mock('@/lib/trpc-client', async () => {
+  const { useState } = await import('react');
   return {
-    ...actual,
-    submitEscrowTransaction: vi.fn().mockResolvedValue({
-      escrowId: 'test-escrow-1',
-      txHash: 'abc123testHash',
-      operation: 'deposit',
-      status: 'confirmed',
-      timestamp: '2026-04-23T12:00:00Z',
-    }),
+    trpc: {
+      bounties: {
+        list: { useQuery: () => ({ data: undefined, isLoading: false }) },
+      },
+      escrow: {
+        create: {
+          useMutation: (options: { onSuccess?: (data: unknown) => void }) => {
+            const [isPending, setIsPending] = useState(false);
+            return {
+              isPending,
+              mutate: () => {
+                setIsPending(true);
+                void Promise.resolve().then(() => {
+                  setIsPending(false);
+                  options.onSuccess?.({
+                    escrowId: 'test-escrow-1',
+                    txHash: 'abc123testHash',
+                    operation: 'deposit',
+                    status: 'confirmed',
+                  });
+                });
+              },
+            };
+          },
+        },
+      },
+    },
   };
 });
 
-import BountiesPage from './page';
+import BountiesClient from './BountiesClient';
 import { bounties } from '@/lib/services/creators-data';
 
-describe('BountiesPage', () => {
+function renderBounties() {
+  return render(<BountiesClient bounties={bounties} />);
+}
+
+describe('BountiesClient', () => {
   it('renders all bounties by default', () => {
-    render(<BountiesPage />);
+    renderBounties();
     expect(screen.getByText(`Showing ${bounties.length} bounties`)).toBeTruthy();
   });
 
   it('filters by difficulty', () => {
-    render(<BountiesPage />);
+    renderBounties();
     fireEvent.click(screen.getByRole('button', { name: /^intermediate$/i }));
     const intermediate = bounties.filter((b) => b.difficulty === 'intermediate');
     expect(screen.getByText(`Showing ${intermediate.length} bounties`)).toBeTruthy();
   });
 
   it('filters by category', () => {
-    render(<BountiesPage />);
+    renderBounties();
     fireEvent.click(screen.getByRole('button', { name: /^UX Research$/i }));
     const ux = bounties.filter((b) => b.category === 'UX Research');
     expect(screen.getByText(`Showing ${ux.length} bounties`)).toBeTruthy();
   });
 
   it('shows empty state when no bounties match', () => {
-    render(<BountiesPage />);
+    renderBounties();
     fireEvent.click(screen.getByRole('button', { name: /^expert$/i }));
     fireEvent.click(screen.getByRole('button', { name: /^Technical Writing$/i }));
-    expect(screen.getByText(/no bounties match/i)).toBeTruthy();
+    expect(screen.getAllByText(/no bounties match/i).length).toBeGreaterThan(0);
   });
 
   it('reset filters button restores all bounties', () => {
-    render(<BountiesPage />);
+    renderBounties();
     fireEvent.click(screen.getByRole('button', { name: /^expert$/i }));
     fireEvent.click(screen.getByRole('button', { name: /^Technical Writing$/i }));
     fireEvent.click(screen.getByRole('button', { name: /reset filters/i }));
@@ -63,8 +85,8 @@ describe('BountiesPage', () => {
 
 describe('ApplyModal', () => {
   function openModal() {
-    render(<BountiesPage />);
-    fireEvent.click(screen.getAllByRole('button', { name: /apply now/i })[0]);
+    renderBounties();
+    fireEvent.click(screen.getAllByRole('button', { name: /^apply to /i })[0]);
   }
 
   it('opens modal when Apply Now is clicked', () => {
@@ -101,9 +123,8 @@ describe('ApplyModal', () => {
   });
 
   it('shows submitting state and then success', async () => {
-    vi.useFakeTimers();
     openModal();
-    fireEvent.change(screen.getByLabelText(/stellar wallet address/i), { target: { value: 'GPAYER123STELLARADDRESS' } });
+    fireEvent.change(screen.getByLabelText(/stellar wallet address/i), { target: { value: Keypair.random().publicKey() } });
     fireEvent.change(screen.getByLabelText(/proposed budget/i), { target: { value: '2000' } });
     fireEvent.change(screen.getByLabelText(/delivery timeline/i), { target: { value: '14' } });
     fireEvent.change(screen.getByLabelText(/proposal/i), { target: { value: 'My detailed proposal' } });
@@ -111,13 +132,18 @@ describe('ApplyModal', () => {
     fireEvent.click(screen.getByRole('button', { name: /submit/i }));
     expect(screen.getByText(/submitting/i)).toBeTruthy();
 
-    await vi.runAllTimersAsync();
-    vi.useRealTimers();
-
     const successEl = await waitFor(() => screen.getByTestId('apply-success'));
     expect(successEl).toBeTruthy();
     expect(screen.getByText(/application submitted/i)).toBeTruthy();
     expect(successEl.textContent).toMatch(/escrow/i);
+  });
+
+  it('rejects an invalid wallet address', () => {
+    openModal();
+    fireEvent.change(screen.getByLabelText(/stellar wallet address/i), { target: { value: 'not-an-address' } });
+    fireEvent.change(screen.getByLabelText(/proposal/i), { target: { value: 'My proposal' } });
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+    expect(screen.getByRole('alert').textContent).toMatch(/valid stellar wallet address/i);
   });
 
   it('pre-fills budget from bounty', () => {
