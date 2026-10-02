@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { LayoutProvider } from "@/components/layout-provider";
 import { DataLoaderProvider } from "@/components/providers/data-loader-provider";
 import { MotionProvider } from "@/components/providers/motion-provider";
+import { SessionProvider } from "@/components/providers/session-provider";
 import { TRPCProvider } from "@/components/providers/trpc-provider";
 import { WalletProvider } from "@/contexts/WalletContext";
 import "./animations.css";
@@ -83,15 +84,17 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          <WalletProvider>
-            <TRPCProvider>
-              <DataLoaderProvider>
-                <MotionProvider>
-                  <LayoutProvider>{children}</LayoutProvider>
-                </MotionProvider>
-              </DataLoaderProvider>
-            </TRPCProvider>
-          </WalletProvider>
+          <SessionProvider>
+            <WalletProvider>
+              <TRPCProvider>
+                <DataLoaderProvider>
+                  <MotionProvider>
+                    <LayoutProvider>{children}</LayoutProvider>
+                  </MotionProvider>
+                </DataLoaderProvider>
+              </TRPCProvider>
+            </WalletProvider>
+          </SessionProvider>
           <Analytics />
         </ThemeProvider>
       </body>
