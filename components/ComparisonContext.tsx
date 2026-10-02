@@ -67,3 +67,12 @@ export function useComparison() {
   }
   return context;
 }
+
+/**
+ * Like `useComparison`, but returns null outside a ComparisonProvider so
+ * components that only optionally take part in comparison (e.g. a creator
+ * card rendered on a page without the comparison bar) still work.
+ */
+export function useOptionalComparison() {
+  return useContext(ComparisonContext) ?? null;
+}
