@@ -87,7 +87,12 @@ export default async function BountyDetailPage({ params }: Props) {
 
         {bounty.milestones && bounty.milestones.length > 0 && (
           <BountyMilestoneProgress
-            milestones={bounty.milestones}
+            milestones={bounty.milestones.map((milestone, index) => ({
+              index,
+              description: milestone.title,
+              amount: milestone.amount,
+              released: milestone.status === 'released',
+            }))}
             currency={bounty.currency}
             escrowStatus={bounty.escrowStatus}
           />

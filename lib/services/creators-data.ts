@@ -389,6 +389,10 @@ export interface Bounty {
   deliverables: string;
   /** When set, only this user (client) may manage applications. Omit for open demo bounties. */
   ownerUserId?: string | null;
+  /** Payment milestones, when the bounty is paid out in phases. */
+  milestones?: Milestone[];
+  /** State of the escrow funding the milestones. */
+  escrowStatus?: 'active' | 'complete' | 'released';
 }
 
 export interface BountyApplication {
