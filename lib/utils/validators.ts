@@ -142,10 +142,10 @@ export type ReviewInput = z.infer<typeof reviewSchema>
 export type ReviewVoteInput = z.infer<typeof reviewVoteSchema>
 export type ReviewModerateInput = z.infer<typeof reviewModerateSchema>
 
-export function validateRequest<T>(
-  schema: z.ZodSchema<T>,
+export function validateRequest<S extends z.ZodTypeAny>(
+  schema: S,
   data: unknown
-): { success: true; data: T } | { success: false; errors: z.ZodError } {
+): { success: true; data: z.output<S> } | { success: false; errors: z.ZodError } {
   const result = schema.safeParse(data)
   if (result.success) {
     return { success: true, data: result.data }
