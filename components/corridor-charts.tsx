@@ -116,7 +116,6 @@ const ChartContent: React.FC<CorridorChartsProps> = ({
   }
 
   const Chart = type === 'line' ? LineChart : BarChart;
-  const DataComponent = type === 'line' ? Line : Bar;
 
   return (
     <div className="w-full h-64">
@@ -127,7 +126,11 @@ const ChartContent: React.FC<CorridorChartsProps> = ({
           <YAxis />
           <Tooltip />
           <Legend />
-          <DataComponent type="monotone" dataKey="value" stroke="#8884d8" />
+          {type === 'line' ? (
+            <Line type="monotone" dataKey="value" stroke="#8884d8" />
+          ) : (
+            <Bar dataKey="value" fill="#8884d8" />
+          )}
         </Chart>
       </ResponsiveContainer>
     </div>
