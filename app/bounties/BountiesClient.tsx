@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { trpc } from '@/lib/trpc-client';
+import { isValidStellarAddress } from '@/lib/utils/stellar-address';
 import type { Bounty } from '@/lib/services/creators-data';
 
 const DIFFICULTIES = ['beginner', 'intermediate', 'advanced', 'expert'] as const;
@@ -79,10 +80,14 @@ function ApplyModal({ bounty, onClose }: ApplyModalProps) {
     setError(null);
     if (!proposal.trim()) { setError('Proposal is required.'); return; }
     if (budget <= 0) { setError('Budget must be positive.'); return; }
+    if (!isValidStellarAddress(walletAddress)) {
+      setError('Enter a valid Stellar wallet address (G...).');
+      return;
+    }
     
     createEscrowMutation.mutate({
       bountyId: bounty.id,
-      payerAddress: walletAddress,
+      payerAddress: walletAddress.trim(),
       payeeAddress: 'PAYEE_ADDRESS_PLACEHOLDER', // Replace with actual payee
       amount: budget,
       token: 'USDC', // Default token
@@ -130,7 +135,8 @@ function ApplyModal({ bounty, onClose }: ApplyModalProps) {
             <p className="text-xs text-muted-foreground">Escrow ID: {success.escrowId} · TX: {success.txHash}</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {/* noValidate: validation is done in handleSubmit so errors reach the role="alert" region */}
+          <form onSubmit={handleSubmit} noValidate className="space-y-4">
             <div>
               <label htmlFor="wallet-address" className="block text-sm font-medium text-foreground mb-1">Stellar Wallet Address</label>
               <input 
@@ -141,7 +147,7 @@ function ApplyModal({ bounty, onClose }: ApplyModalProps) {
                 className={inputCls} 
                 placeholder="G..." 
                 aria-required="true"
-                aria-invalid={!!error && !walletAddress}
+                aria-invalid={!!error && !isValidStellarAddress(walletAddress)}
               />
             </div>
             <div>
