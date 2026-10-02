@@ -12,6 +12,8 @@ function getGitSha() {
 const nextConfig = {
   output: 'standalone',
   images: {
+    // Negotiated per request by the optimizer; AVIF first, WebP as fallback.
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       { protocol: 'https', hostname: '*.amazonaws.com' },
       { protocol: 'https', hostname: 'ipfs.io' },
