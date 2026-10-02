@@ -74,6 +74,39 @@ async function awsGetSecret(name: SecretName): Promise<string> {
 // Azure Key Vault provider
 // ---------------------------------------------------------------------------
 
+
+interface AzureSecretClient {
+  getSecret(name: string): Promise<{ value?: string }>;
+  setSecret(name: string, value: string): Promise<unknown>;
+}
+
+interface AzureSdk {
+  SecretClient: new (vaultUrl: string, credential: unknown) => AzureSecretClient;
+  DefaultAzureCredential: new () => unknown;
+}
+
+/**
+ * Loads the Azure Key Vault SDK on demand. The packages are only needed
+ * when KMS_PROVIDER=azure, so they are not dependencies of the app; the
+ * specifiers are held in variables to keep the bundler and tsc from
+ * resolving them at build time.
+ */
+async function loadAzureSdk(): Promise<AzureSdk> {
+  const secrets = '@azure/keyvault-secrets';
+  const identity = '@azure/identity';
+  try {
+    const [{ SecretClient }, { DefaultAzureCredential }] = await Promise.all([
+      import(/* webpackIgnore: true */ /* turbopackIgnore: true */ secrets),
+      import(/* webpackIgnore: true */ /* turbopackIgnore: true */ identity),
+    ]);
+    return { SecretClient, DefaultAzureCredential };
+  } catch {
+    throw new Error(
+      'KMS[azure]: install @azure/keyvault-secrets and @azure/identity to use KMS_PROVIDER=azure',
+    );
+  }
+}
+
 /**
  * Lazily imports the Azure SDK so non-Azure deployments pay zero bundle cost.
  * Uses DefaultAzureCredential which honours managed identity in production
@@ -92,8 +125,7 @@ async function azureGetSecret(name: SecretName): Promise<string> {
   }
 
   // Dynamic imports keep Azure packages out of non-Azure bundles.
-  const { SecretClient } = await import('@azure/keyvault-secrets');
-  const { DefaultAzureCredential } = await import('@azure/identity');
+  const { SecretClient, DefaultAzureCredential } = await loadAzureSdk();
 
   // Azure secret names may not contain underscores — map to hyphens.
   const secretName = name.replace(/_/g, '-').toLowerCase();
@@ -279,8 +311,7 @@ export async function provisionSecret(name: SecretName, value: string): Promise<
     if (!vaultUrl) {
       throw new Error(`KMS[azure]: AZURE_KEYVAULT_URL must be set to provision secrets`);
     }
-    const { SecretClient } = await import('@azure/keyvault-secrets');
-    const { DefaultAzureCredential } = await import('@azure/identity');
+    const { SecretClient, DefaultAzureCredential } = await loadAzureSdk();
 
     const secretName = name.replace(/_/g, '-').toLowerCase();
     const client = new SecretClient(vaultUrl, new DefaultAzureCredential());
