@@ -9,7 +9,7 @@ import {
   ToggleRight,
   Users,
 } from 'lucide-react';
-import { ResponsiveSidebar, type SidebarItem } from '@/components/sidebar';
+import { ResponsiveSidebar, type SidebarItem } from '@/components/layout/sidebar';
 
 // Only routes that exist under app/admin.
 const navItems: SidebarItem[] = [

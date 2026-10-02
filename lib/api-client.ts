@@ -27,7 +27,7 @@ import {
   type EscrowTransactionResponse,
   isApiSuccess,
 } from "./api-models";
-import { notifyLoadingChange } from "../components/layout-provider";
+import { notifyLoadingChange } from "@/components/layout/layout-provider";
 
 // ── Error class ───────────────────────────────────────────────────────────────
 

@@ -4,7 +4,7 @@ import * as React from 'react'
 import { ComparisonProvider } from '@/components/compare/comparison-context'
 import { ComparisonBar } from '@/components/compare/comparison-bar'
 import { OnboardingTour } from '@/components/tour/onboarding-tour'
-import { BackToTop } from '@/components/back-to-top'
+import { BackToTop } from '@/components/layout/back-to-top'
 
 // ── Loading event bus ─────────────────────────────────────────────────────────
 

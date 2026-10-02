@@ -1,8 +1,8 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { Header } from '@/components/header'
-import { Footer } from '@/components/footer'
+import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
 import { SocialShare } from '@/components/common/social-share'
 
 // Dynamic import keeps Yjs/Worker APIs out of the SSR bundle

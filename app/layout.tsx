@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "next-themes";
-import { LayoutProvider } from "@/components/layout-provider";
+import { LayoutProvider } from "@/components/layout/layout-provider";
 import { DataLoaderProvider } from "@/components/providers/data-loader-provider";
 import { MotionProvider } from "@/components/providers/motion-provider";
 import { SessionProvider } from "@/components/providers/session-provider";

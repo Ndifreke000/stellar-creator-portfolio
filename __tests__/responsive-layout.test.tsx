@@ -22,9 +22,9 @@ vi.mock('@/components/connect-wallet-button', () => ({
   formatAccount: (a: string) => a,
 }));
 
-import { ResponsiveSidebar, SidebarLayout } from '@/components/sidebar';
+import { ResponsiveSidebar, SidebarLayout } from '@/components/layout/sidebar';
 import { AdminSidebar } from '@/components/layout/admin-sidebar';
-import { Header } from '@/components/header';
+import { Header } from '@/components/layout/header';
 
 function setViewport(width: number) {
   Object.defineProperty(window, 'innerWidth', { configurable: true, value: width });

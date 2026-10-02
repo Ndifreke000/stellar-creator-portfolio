@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, act, waitFor } from '@testing-library/react'
 import React from 'react'
-import { LayoutProvider, notifyLoadingChange, useGlobalLoading } from './layout-provider'
+import { LayoutProvider, notifyLoadingChange, useGlobalLoading } from '@/components/layout/layout-provider'
 
 // LayoutProvider mounts the comparison bar, which navigates with the app
 // router; outside a Next.js tree there is none to read.
@@ -123,8 +123,8 @@ describe('ProgressBar', () => {
 
 // ── Integration: apiFetch wires loading state ─────────────────────────────────
 
-import { apiFetch } from '../lib/api-client'
-import { apiSuccess } from '../lib/api-models'
+import { apiFetch } from '@/lib/api-client'
+import { apiSuccess } from '@/lib/api-models'
 
 describe('apiFetch integration', () => {
   it('sets loading true during fetch and false after', async () => {

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
 import { CreatorCard } from '@/components/cards/creator-card';
 import { CardSkeletonGrid } from '@/components/skeletons/card-skeleton';
 import { EmptyState } from '@/components/common/empty-state';

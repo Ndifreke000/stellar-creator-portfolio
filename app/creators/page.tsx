@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
 import { CreatorCard } from '@/components/cards/creator-card';
 import { creators, disciplines, getCreatorsByDiscipline } from '@/lib/services/creators-data';
 import { Button } from '@/components/ui/button';

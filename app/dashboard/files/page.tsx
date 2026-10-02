@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
 import { IpfsStorageBrowser } from '@/components/ipfs/ipfs-storage-browser';
 import { FileBrowserSkeleton } from '@/components/ui/skeleton-group';
 
