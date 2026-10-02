@@ -7,6 +7,10 @@ import PWAManager from '@/lib/pwa/pwa-utils';
  * Tests PWA installation, offline mode, and notifications
  */
 
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
 describe('PWA Integration - Installation', () => {
   let pwaManager: PWAManager;
 
@@ -23,15 +27,17 @@ describe('PWA Integration - Installation', () => {
   });
 
   it('should register service worker', async () => {
-    global.navigator = {
-      ...global.navigator,
+    // Stub (rather than reassign) so the real navigator, including its
+    // onLine getter, is restored for the suites that follow.
+    vi.stubGlobal('navigator', {
+      onLine: true,
       serviceWorker: {
         register: vi.fn().mockResolvedValue({
           scope: '/',
           active: true,
         }),
       },
-    } as any;
+    });
 
     expect('serviceWorker' in navigator).toBe(true);
   });
@@ -42,7 +48,7 @@ describe('PWA Integration - Installation', () => {
   });
 
   it('should handle install prompt response', async () => {
-    const outcome = 'accepted' | 'dismissed';
+    const outcome: 'accepted' | 'dismissed' = 'accepted';
     expect(['accepted', 'dismissed']).toContain(outcome);
   });
 
