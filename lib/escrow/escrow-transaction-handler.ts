@@ -83,6 +83,7 @@ export async function releaseEscrowFunds(
             userId: creatorId,
             amount: escrow.amount,
             escrowId: escrowId,
+            status: "completed",
           },
         });
 
@@ -182,6 +183,7 @@ export async function refundEscrow(
             userId: clientId,
             amount: escrow.amount,
             escrowId: escrowId,
+            status: "completed",
           },
         });
 
