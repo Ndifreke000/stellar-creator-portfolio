@@ -21,7 +21,7 @@ import { ProfileCompletionIndicator } from '@/components/profile/profile-complet
 import { trackEvent } from '@/lib/analytics/analytics';
 import { computeProfileCompletion } from '@/lib/profile-completion';
 import { parseProfileLink, type ProfileLinkKind } from '@/lib/profile-links';
-import { useLinkVerification } from '@/lib/hooks/use-link-verification';
+import { useLinkVerification } from '@/hooks/use-link-verification';
 import { LinkVerificationBadge } from '@/components/ui/link-verification-badge';
 import {
     PortfolioReorder,

@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
-import { useLinkVerification } from '@/lib/hooks/use-link-verification';
+import { useLinkVerification } from '@/hooks/use-link-verification';
 import { LinkVerificationBadge } from '@/components/ui/link-verification-badge';
 import type { ProfileLinkKind } from '@/lib/profile-links';
 import { cn } from '@/lib/utils';

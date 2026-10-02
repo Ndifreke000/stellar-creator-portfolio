@@ -51,7 +51,7 @@ rather than each firing independently.
   both automatically batched through the provider.
 
 ```typescript
-import { useCreatorReputation } from '@/lib/hooks/useCreatorReviews';
+import { useCreatorReputation } from '@/hooks/useCreatorReviews';
 
 export function CreatorCard({ creator }) {
   const { data: reputation, loading } = useCreatorReputation(creator.id);
