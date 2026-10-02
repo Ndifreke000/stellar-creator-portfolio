@@ -20,7 +20,17 @@ interface TierBadgeProps {
   className?: string;
 }
 
-const TIER_CONFIG = {
+interface TierConfig {
+  emoji: string;
+  label: string;
+  title: string;
+  bg: string;
+  border: string;
+  text: string;
+  dot: string;
+}
+
+const TIER_CONFIG: Record<VerificationTier, TierConfig | null> = {
   NONE: null, // No badge shown
   VERIFIED: {
     emoji: '✓',
@@ -49,7 +59,7 @@ const TIER_CONFIG = {
     text: 'text-purple-300',
     dot: 'bg-purple-500',
   },
-} as const satisfies Record<VerificationTier, typeof TIER_CONFIG.VERIFIED | null>;
+};
 
 const SIZE_CLASSES = {
   sm: { wrap: 'gap-1 px-1.5 py-0.5 text-xs rounded', emoji: 'text-xs' },
