@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { PaginationControls } from '@/components/ui/pagination-controls';
 import { ReviewFilters, type ReviewFilterOptions } from '@/components/reviews/review-filters';
 import { ReviewList } from '@/components/reviews/review-list';
-import { ErrorAlert } from '@/components/error-alert';
+import { ErrorAlert } from '@/components/errors/error-alert';
 import { fetchAllReviews } from '@/lib/api-client';
 import { TrendingUp, Users, Star, Award } from 'lucide-react';
 import type { PublicReview, ReputationAggregation } from '@/lib/api-models';

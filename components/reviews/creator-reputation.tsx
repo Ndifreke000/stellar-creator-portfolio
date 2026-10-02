@@ -6,7 +6,7 @@ import { isApiSuccess } from '@/lib/api-models';
 import { ReviewList } from '@/components/reviews/review-list';
 import { ReviewFilters, type ReviewFilterOptions } from '@/components/reviews/review-filters';
 import { ReviewForm } from '@/components/reviews/review-form';
-import { ErrorAlert } from '@/components/error-alert';
+import { ErrorAlert } from '@/components/errors/error-alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { PaginationControls } from '@/components/ui/pagination-controls';

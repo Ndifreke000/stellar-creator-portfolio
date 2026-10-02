@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { ErrorBoundary } from '@/components/error-boundary';
+import { ErrorBoundary } from '@/components/errors/error-boundary';
 
 export const metadata: Metadata = {
   title: 'Creator Directory',

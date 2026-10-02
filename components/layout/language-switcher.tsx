@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useI18n } from '@/components/i18n-provider';
+import { useI18n } from '@/components/providers/i18n-provider';
 import { LOCALE_INFO, SUPPORTED_LOCALES, type AppLocale } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
