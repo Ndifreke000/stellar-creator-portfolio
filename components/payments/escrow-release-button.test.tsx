@@ -10,7 +10,7 @@ vi.mock('@/lib/api-client', async (importOriginal) => {
   };
 });
 
-import { EscrowReleaseButton } from './escrow-release-button';
+import { EscrowReleaseButton } from '@/components/payments/escrow-release-button';
 import { releaseEscrow } from '@/lib/api-client';
 import { ApiClientError } from '@/lib/api-client';
 

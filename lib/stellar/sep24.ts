@@ -3,8 +3,8 @@
  *
  * SEP-24 interactive deposit/withdraw client (Issue #1393).
  *
- * Both SEP-24 components were TODO stubs: `components/features/sep24-flow.tsx`
- * only tracked UI state, and `components/sep24-flow.tsx` logged the form
+ * Both SEP-24 components were TODO stubs: `components/payments/sep24-flow.tsx`
+ * only tracked UI state, and `components/payments/sep24-payment-form.tsx` logged the form
  * payload and returned. Neither ever contacted an anchor.
  *
  * SEP-24 is a three-part protocol and this module covers all three:

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { CrossChainSwapModal } from '@/components/swap/cross-chain-swap-modal';
+import { CrossChainSwapModal } from '@/components/payments/cross-chain-swap-modal';
 import { ArrowLeftRight } from 'lucide-react';
 
 export function SwapLauncher() {

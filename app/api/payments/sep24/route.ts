@@ -11,7 +11,7 @@ import {
 /**
  * POST /api/payments/sep24 — start a SEP-24 interactive transfer (Issue #1393).
  *
- * `components/sep24-flow.tsx` posts its validated form here. The anchor
+ * `components/payments/sep24-payment-form.tsx` posts its validated form here. The anchor
  * handshake is server-side because the interactive endpoints require a SEP-10
  * JWT, and minting one in the browser would mean shipping the signing key
  * there.

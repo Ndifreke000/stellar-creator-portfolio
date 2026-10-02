@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { TransactionLogTable, type TransactionLogEntry } from './transaction-log-table';
+import { TransactionLogTable, type TransactionLogEntry } from '@/components/payments/transaction-log-table';
 
 const base: TransactionLogEntry[] = [
   {
