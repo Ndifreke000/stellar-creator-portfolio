@@ -40,7 +40,7 @@
     "mobile/**",
     "backend/limit/**",
     "server/**",
-    "tests/**",
+    "e2e/**",
     "load-tests/**",
     "infrastructure/**",
     "__tests__/**",

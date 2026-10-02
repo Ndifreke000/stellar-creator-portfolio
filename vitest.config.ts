@@ -27,6 +27,8 @@ export default defineConfig({
       'backend/**',
       'load-tests/**',
       'infrastructure/**',
+      // Playwright specs; run with `pnpm test:e2e`.
+      'e2e/**',
     ],
   },
 });
