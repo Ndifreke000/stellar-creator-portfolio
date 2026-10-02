@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { CreatorCard } from '@/components/cards/creator-card';
-import { creators, disciplines, getCreatorsByDiscipline } from '@/lib/services/creators-data';
+import { disciplines } from '@/lib/services/creators-data';
 import { Button } from '@/components/ui/button';
 import { trpc } from '@/lib/trpc-client';
 import { CardSkeleton } from '@/components/skeletons/card-skeleton';

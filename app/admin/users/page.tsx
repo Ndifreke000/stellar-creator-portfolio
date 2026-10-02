@@ -4,9 +4,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import {
-  Search, UserCheck, UserX, Trash2, ShieldCheck, ChevronDown,
+  Search, UserCheck, UserX, Trash2,
 } from 'lucide-react';
 import {
   changeUserRole,
