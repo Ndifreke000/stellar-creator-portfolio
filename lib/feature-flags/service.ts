@@ -9,17 +9,17 @@
  * - Evaluation latency < 5ms (Redis hit) / < 20ms (DB fallback)
  */
 
-import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
-import { redisGet, redisSet, redisDel } from "@/lib/storage/redis";
-import { createHash } from "crypto";
+import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
+import { redisGet, redisSet, redisDel } from '@/lib/storage/redis';
+import { createHash } from 'crypto';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 export interface FlagContext {
   userId?: string;
   role?: string;
-  platform?: "ios" | "android" | "web";
+  platform?: 'ios' | 'android' | 'web';
   betaGroup?: string;
   [key: string]: unknown;
 }
@@ -58,9 +58,9 @@ export async function invalidateFlagCache(name: string): Promise<void> {
  * Same user always lands in the same bucket for a given flag.
  */
 function rolloutBucket(flagName: string, userId: string): number {
-  const hash = createHash("sha256")
+  const hash = createHash('sha256')
     .update(`${flagName}:${userId}`)
-    .digest("hex");
+    .digest('hex');
   // Take first 4 hex chars → 0–65535, map to 0–100
   return Math.floor((parseInt(hash.slice(0, 4), 16) / 65535) * 100);
 }
@@ -232,7 +232,7 @@ export async function upsertFlag(input: UpsertFlagInput) {
  */
 export async function listFlags() {
   return prisma.featureFlag.findMany({
-    orderBy: { name: "asc" },
+    orderBy: { name: 'asc' },
     include: {
       _count: { select: { evaluations: true } },
     },
@@ -247,7 +247,7 @@ export async function getFlagWithAnalytics(name: string) {
     where: { name },
     include: {
       evaluations: {
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
         take: 100,
         select: { result: true, createdAt: true, userId: true },
       },

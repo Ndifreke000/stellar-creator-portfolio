@@ -12,16 +12,16 @@
  *  - Throughput target: > 20 tx/second across all accounts
  */
 
-import { prisma } from "@/lib/prisma";
-import { stellarClient } from "@/server/stellar/client";
-import { contractService } from "@/server/stellar/contract";
-import type { Signer } from "@/server/stellar/types";
+import { prisma } from '@/lib/prisma';
+import { stellarClient } from '@/server/stellar/client';
+import { contractService } from '@/server/stellar/contract';
+import type { Signer } from '@/server/stellar/types';
 import {
   acquireSequence,
   markSequenceUsed,
   releaseSequenceBack,
   purgeStaleReservations,
-} from "./sequence-manager-v2";
+} from './sequence-manager-v2';
 
 const DRAIN_INTERVAL_MS = 100;
 const BATCH_SIZE = 20;   // max tx per drainer tick
@@ -123,7 +123,7 @@ async function submitToSorobanRPC(tx: {
 }): Promise<string> {
   if (resolveSigner == null) {
     throw new Error(
-      "[drainer] no signer resolver registered — call setDrainerSigner() at startup",
+      '[drainer] no signer resolver registered — call setDrainerSigner() at startup',
     );
   }
 
@@ -142,9 +142,9 @@ async function submitToSorobanRPC(tx: {
 function isBadSequenceError(err: unknown): boolean {
   const msg = err instanceof Error ? err.message : String(err);
   return (
-    msg.includes("bad sequence") ||
-    msg.includes("txBAD_SEQ") ||
-    msg.includes("wrong sequence")
+    msg.includes('bad sequence') ||
+    msg.includes('txBAD_SEQ') ||
+    msg.includes('wrong sequence')
   );
 }
 
@@ -157,8 +157,8 @@ async function drainAccount(accountId: string): Promise<void> {
   try {
     // Get oldest pending tx for this account
     const tx = await prisma.transactionQueue.findFirst({
-      where: { accountId, status: "pending" },
-      orderBy: { createdAt: "asc" },
+      where: { accountId, status: 'pending' },
+      orderBy: { createdAt: 'asc' },
     });
 
     if (!tx) {
@@ -187,7 +187,7 @@ async function drainAccount(accountId: string): Promise<void> {
         prisma.transactionQueue.update({
           where: { id: tx.id },
           data: {
-            status: "confirmed",
+            status: 'confirmed',
             txHash,
             sequence,
             submittedAt: new Date(),
@@ -203,7 +203,7 @@ async function drainAccount(accountId: string): Promise<void> {
             method: tx.method,
             sequence,
             txHash,
-            status: "confirmed",
+            status: 'confirmed',
             submittedAt: new Date(),
             confirmedAt: new Date(),
           },
@@ -233,7 +233,7 @@ async function drainAccount(accountId: string): Promise<void> {
         where: { id: tx.id },
         data: {
           attempts: nextAttempts,
-          status: exhausted ? "failed" : "pending",
+          status: exhausted ? 'failed' : 'pending',
           error: err instanceof Error ? err.message : String(err),
           // On bad-sequence retry with slight delay (next drainer tick handles it)
         },
@@ -246,7 +246,7 @@ async function drainAccount(accountId: string): Promise<void> {
       if (!exhausted) {
         stats.retried += 1;
         console.warn(
-          `[drainer] tx ${tx.id} attempt ${nextAttempts}/${MAX_ATTEMPTS}: ${isBadSeq ? "bad-seq, retrying" : "transient error"}`,
+          `[drainer] tx ${tx.id} attempt ${nextAttempts}/${MAX_ATTEMPTS}: ${isBadSeq ? 'bad-seq, retrying' : 'transient error'}`,
         );
       } else {
         stats.processed += 1;
@@ -268,9 +268,9 @@ async function drainerTick(): Promise<void> {
   try {
     // Find distinct accounts with pending work
     const pending = await prisma.transactionQueue.groupBy({
-      by: ["accountId"],
-      where: { status: "pending" },
-      orderBy: { accountId: "asc" },
+      by: ['accountId'],
+      where: { status: 'pending' },
+      orderBy: { accountId: 'asc' },
       take: BATCH_SIZE,
     });
 
@@ -279,7 +279,7 @@ async function drainerTick(): Promise<void> {
     // Periodically purge stale reservations (every ~10s)
     if (Date.now() % 10000 < DRAIN_INTERVAL_MS) {
       const accounts = await prisma.sequencePool.groupBy({
-        by: ["accountId"],
+        by: ['accountId'],
         where: { reserved: true, usedAt: null },
       });
       await Promise.all(
@@ -287,7 +287,7 @@ async function drainerTick(): Promise<void> {
       );
     }
   } catch (err) {
-    console.error("[drainer] tick error:", err);
+    console.error('[drainer] tick error:', err);
   }
 }
 
@@ -299,7 +299,7 @@ export function startDrainer(): void {
   if (drainerTimer != null) return;
   startedAt = Date.now();
   drainerTimer = setInterval(() => {
-    drainerTick().catch((e) => console.error("[drainer] uncaught:", e));
+    drainerTick().catch((e) => console.error('[drainer] uncaught:', e));
   }, DRAIN_INTERVAL_MS);
 
   console.info(`[drainer] Started — interval=${DRAIN_INTERVAL_MS}ms, batch=${BATCH_SIZE}`);
@@ -312,7 +312,7 @@ export function stopDrainer(): void {
   if (drainerTimer != null) {
     clearInterval(drainerTimer);
     drainerTimer = null;
-    console.info("[drainer] Stopped");
+    console.info('[drainer] Stopped');
   }
 }
 
@@ -343,7 +343,7 @@ export async function enqueueTransaction(opts: {
       contractId: opts.contractId,
       method: opts.method,
       args: opts.args as object,
-      status: "pending",
+      status: 'pending',
       maxAttempts: opts.maxAttempts ?? MAX_ATTEMPTS,
     },
   });

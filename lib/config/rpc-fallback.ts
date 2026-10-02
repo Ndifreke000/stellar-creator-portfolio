@@ -17,7 +17,7 @@
  * Related: #1350
  */
 
-import { type NetworkName } from "./network";
+import { type NetworkName } from './network';
 
 // ---------------------------------------------------------------------------
 // Endpoint pools — env vars override defaults at each position.
@@ -28,19 +28,19 @@ import { type NetworkName } from "./network";
 const POOLS: Record<NetworkName, string[]> = {
   mainnet: [
     // Primary endpoints
-    process.env.NEXT_PUBLIC_MAINNET_RPC_URL    ?? "https://soroban-mainnet.stellar.org",
-    process.env.NEXT_PUBLIC_MAINNET_RPC_URL_2  ?? "https://mainnet.stellar.validationcloud.io/v1/soroban/rpc",
-    process.env.NEXT_PUBLIC_MAINNET_RPC_URL_3  ?? "https://rpc.ankr.com/stellar_soroban",
+    process.env.NEXT_PUBLIC_MAINNET_RPC_URL    ?? 'https://soroban-mainnet.stellar.org',
+    process.env.NEXT_PUBLIC_MAINNET_RPC_URL_2  ?? 'https://mainnet.stellar.validationcloud.io/v1/soroban/rpc',
+    process.env.NEXT_PUBLIC_MAINNET_RPC_URL_3  ?? 'https://rpc.ankr.com/stellar_soroban',
     // Secondary / fallback endpoints
-    process.env.NEXT_PUBLIC_MAINNET_RPC_URL_4  ?? "https://mainnet.sorobanrpc.com",
-    process.env.NEXT_PUBLIC_MAINNET_RPC_URL_5  ?? "https://horizon.stellar.org",   // Horizon JSON-RPC shim
+    process.env.NEXT_PUBLIC_MAINNET_RPC_URL_4  ?? 'https://mainnet.sorobanrpc.com',
+    process.env.NEXT_PUBLIC_MAINNET_RPC_URL_5  ?? 'https://horizon.stellar.org',   // Horizon JSON-RPC shim
   ],
   testnet: [
     // Primary endpoints
-    process.env.NEXT_PUBLIC_TESTNET_RPC_URL    ?? "https://soroban-testnet.stellar.org",
-    process.env.NEXT_PUBLIC_TESTNET_RPC_URL_2  ?? "https://testnet.stellar.validationcloud.io/v1/soroban/rpc",
+    process.env.NEXT_PUBLIC_TESTNET_RPC_URL    ?? 'https://soroban-testnet.stellar.org',
+    process.env.NEXT_PUBLIC_TESTNET_RPC_URL_2  ?? 'https://testnet.stellar.validationcloud.io/v1/soroban/rpc',
     // Secondary / fallback endpoints
-    process.env.NEXT_PUBLIC_TESTNET_RPC_URL_3  ?? "https://testnet.sorobanrpc.com",
+    process.env.NEXT_PUBLIC_TESTNET_RPC_URL_3  ?? 'https://testnet.sorobanrpc.com',
   ],
 };
 
@@ -151,8 +151,8 @@ async function fetchWithTimeout(url: string, body: string): Promise<Response> {
   const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   try {
     return await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body,
       signal: controller.signal,
     });
@@ -166,7 +166,7 @@ async function fetchWithTimeout(url: string, body: string): Promise<Response> {
 // ---------------------------------------------------------------------------
 
 async function probeEndpoint(url: string): Promise<number> {
-  const ping = JSON.stringify({ jsonrpc: "2.0", id: 0, method: "getHealth", params: [] });
+  const ping = JSON.stringify({ jsonrpc: '2.0', id: 0, method: 'getHealth', params: [] });
   const t0 = Date.now();
   try {
     const res = await fetchWithTimeout(url, ping);
@@ -233,7 +233,7 @@ export async function rpcCall<T = unknown>(
   params: unknown = [],
 ): Promise<RpcCallResult<T>> {
   const pool = state[network];
-  const body = JSON.stringify({ jsonrpc: "2.0", id: 1, method, params });
+  const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method, params });
   const tried = new Set<number>();
 
   for (let attempt = 1; attempt <= pool.urls.length; attempt++) {
@@ -248,7 +248,7 @@ export async function rpcCall<T = unknown>(
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const json = (await res.json()) as { result?: T; error?: { message?: string } };
-      if (json.error) throw new Error(json.error.message ?? "RPC error");
+      if (json.error) throw new Error(json.error.message ?? 'RPC error');
 
       // Record success for inline health update.
       recordSuccess(pool, idx, Date.now() - t0);
@@ -273,7 +273,7 @@ export async function fetchTransaction(
   network: NetworkName,
   txHash: string,
 ): Promise<RpcCallResult<unknown>> {
-  return rpcCall(network, "getTransaction", { hash: txHash });
+  return rpcCall(network, 'getTransaction', { hash: txHash });
 }
 
 /** Convenience: return the URL of the current primary endpoint. */

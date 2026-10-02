@@ -25,21 +25,21 @@
 
 /** Terminal and non-terminal statuses SEP-24 defines for a transaction. */
 export type Sep24Status =
-  | "incomplete"
-  | "pending_user_transfer_start"
-  | "pending_user_transfer_complete"
-  | "pending_external"
-  | "pending_anchor"
-  | "pending_stellar"
-  | "pending_trust"
-  | "pending_user"
-  | "completed"
-  | "refunded"
-  | "expired"
-  | "no_market"
-  | "too_small"
-  | "too_large"
-  | "error";
+  | 'incomplete'
+  | 'pending_user_transfer_start'
+  | 'pending_user_transfer_complete'
+  | 'pending_external'
+  | 'pending_anchor'
+  | 'pending_stellar'
+  | 'pending_trust'
+  | 'pending_user'
+  | 'completed'
+  | 'refunded'
+  | 'expired'
+  | 'no_market'
+  | 'too_small'
+  | 'too_large'
+  | 'error';
 
 /**
  * Statuses after which polling must stop.
@@ -50,13 +50,13 @@ export type Sep24Status =
  * given up on.
  */
 const TERMINAL_STATUSES: ReadonlySet<Sep24Status> = new Set<Sep24Status>([
-  "completed",
-  "refunded",
-  "expired",
-  "no_market",
-  "too_small",
-  "too_large",
-  "error",
+  'completed',
+  'refunded',
+  'expired',
+  'no_market',
+  'too_small',
+  'too_large',
+  'error',
 ]);
 
 export function isTerminalStatus(status: Sep24Status): boolean {
@@ -65,12 +65,12 @@ export function isTerminalStatus(status: Sep24Status): boolean {
 
 /** True when a terminal status means the transfer succeeded. */
 export function isSuccessStatus(status: Sep24Status): boolean {
-  return status === "completed";
+  return status === 'completed';
 }
 
 export interface Sep24Transaction {
   id: string;
-  kind: "deposit" | "withdrawal";
+  kind: 'deposit' | 'withdrawal';
   status: Sep24Status;
   amount_in?: string;
   amount_out?: string;
@@ -100,7 +100,7 @@ export class Sep24Error extends Error {
     readonly status?: number,
   ) {
     super(message);
-    this.name = "Sep24Error";
+    this.name = 'Sep24Error';
   }
 }
 
@@ -132,7 +132,7 @@ async function fetchWithTimeout(
  * a different protocol.
  */
 export async function discoverTransferServer(homeDomain: string): Promise<string> {
-  const domain = homeDomain.replace(/^https?:\/\//, "").replace(/\/+$/, "");
+  const domain = homeDomain.replace(/^https?:\/\//, '').replace(/\/+$/, '');
   const tomlUrl = `https://${domain}/.well-known/stellar.toml`;
 
   const response = await fetchWithTimeout(tomlUrl);
@@ -145,19 +145,19 @@ export async function discoverTransferServer(homeDomain: string): Promise<string
 
   const toml = await response.text();
   const read = (key: string) =>
-    toml.match(new RegExp(`^\\s*${key}\\s*=\\s*"([^"]+)"`, "m"))?.[1];
+    toml.match(new RegExp(`^\\s*${key}\\s*=\\s*"([^"]+)"`, 'm'))?.[1];
 
-  const transferServer = read("TRANSFER_SERVER_SEP0024") ?? read("TRANSFER_SERVER");
+  const transferServer = read('TRANSFER_SERVER_SEP0024') ?? read('TRANSFER_SERVER');
   if (!transferServer) {
     throw new Sep24Error(`${domain} does not advertise a SEP-24 TRANSFER_SERVER`);
   }
 
-  return transferServer.replace(/\/+$/, "");
+  return transferServer.replace(/\/+$/, '');
 }
 
 export interface StartInteractiveParams {
   transferServer: string;
-  kind: "deposit" | "withdraw";
+  kind: 'deposit' | 'withdraw';
   assetCode: string;
   account: string;
   /** SEP-10 JWT. SEP-24 requires authentication for interactive endpoints. */
@@ -192,9 +192,9 @@ export async function startInteractiveFlow(
   };
 
   const response = await fetchWithTimeout(endpoint, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${authToken}`,
     },
     body: JSON.stringify(body),
@@ -216,10 +216,10 @@ export async function startInteractiveFlow(
 
   const payload = (await response.json()) as Partial<InteractiveResponse>;
   if (!payload.url || !payload.id) {
-    throw new Sep24Error("Anchor response is missing `url` or `id`");
+    throw new Sep24Error('Anchor response is missing `url` or `id`');
   }
 
-  return { type: payload.type ?? "interactive_customer_info_needed", url: payload.url, id: payload.id };
+  return { type: payload.type ?? 'interactive_customer_info_needed', url: payload.url, id: payload.id };
 }
 
 /** Fetches one transaction's current state. */
@@ -243,7 +243,7 @@ export async function fetchTransaction(params: {
 
   const payload = (await response.json()) as { transaction?: Sep24Transaction };
   if (!payload.transaction) {
-    throw new Sep24Error("Anchor response is missing `transaction`");
+    throw new Sep24Error('Anchor response is missing `transaction`');
   }
 
   return payload.transaction;
@@ -293,7 +293,7 @@ export async function pollUntilTerminal(options: PollOptions): Promise<Sep24Tran
 
   while (Date.now() < deadline) {
     if (signal?.aborted) {
-      throw new Sep24Error("Polling aborted");
+      throw new Sep24Error('Polling aborted');
     }
 
     try {
@@ -334,10 +334,10 @@ export async function pollUntilTerminal(options: PollOptions): Promise<Sep24Tran
  * caller should fall back to rendering the URL as a link the user can click.
  */
 export function openInteractiveWindow(url: string): { closed: Promise<void> } {
-  const popup = window.open(url, "sep24-interactive", "width=500,height=700");
+  const popup = window.open(url, 'sep24-interactive', 'width=500,height=700');
 
   if (!popup) {
-    throw new Sep24Error("The anchor window was blocked. Allow popups and try again.");
+    throw new Sep24Error('The anchor window was blocked. Allow popups and try again.');
   }
 
   const closed = new Promise<void>((resolve) => {

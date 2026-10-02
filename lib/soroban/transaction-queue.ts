@@ -9,10 +9,10 @@
  * - Graceful failover when a specific endpoint returns transient errors
  */
 
-import { prisma } from "@/lib/prisma";
-import { getSequenceManager } from "./sequence-manager";
-import { rpcCall, getPoolHealth, startProbing, type RpcCallResult } from "@/lib/config/rpc-fallback";
-import type { NetworkName } from "@/lib/config/network";
+import { prisma } from '@/lib/prisma';
+import { getSequenceManager } from './sequence-manager';
+import { rpcCall, getPoolHealth, startProbing, type RpcCallResult } from '@/lib/config/rpc-fallback';
+import type { NetworkName } from '@/lib/config/network';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -24,7 +24,7 @@ export interface QueuedTransaction {
   contractId: string;
   method: string;
   args: any[];
-  status: "pending" | "submitted" | "confirmed" | "failed";
+  status: 'pending' | 'submitted' | 'confirmed' | 'failed';
   sequence?: bigint;
   txHash?: string;
   error?: string;
@@ -105,7 +105,7 @@ export class TransactionQueue {
   private queue: QueuedTransaction[] = [];
   private isProcessing = false;
 
-  constructor(accountId: string, network: NetworkName = "mainnet") {
+  constructor(accountId: string, network: NetworkName = 'mainnet') {
     this.accountId = accountId;
     this.network = network;
     // Start background health probing for this network
@@ -124,7 +124,7 @@ export class TransactionQueue {
       contractId,
       method,
       args,
-      status: "pending",
+      status: 'pending',
       attempts: 0,
       maxAttempts,
       createdAt: new Date(),
@@ -151,13 +151,13 @@ export class TransactionQueue {
 
         if (result.success) {
           this.queue.shift();
-          transaction.status = "confirmed";
+          transaction.status = 'confirmed';
           transaction.txHash = result.txHash;
           transaction.confirmedAt = new Date();
         } else {
           // Exhausted in submitWithRetry — mark failed and remove
           this.queue.shift();
-          transaction.status = "failed";
+          transaction.status = 'failed';
           transaction.error = result.error;
         }
       }
@@ -192,7 +192,7 @@ export class TransactionQueue {
           success: true,
         });
 
-        transaction.status = "submitted";
+        transaction.status = 'submitted';
         transaction.submittedAt = new Date();
         transaction.txHash = rpcResult.txHash;
 
@@ -209,7 +209,7 @@ export class TransactionQueue {
         logRpcAttempt({
           txId: transaction.id,
           attempt,
-          endpoint: "unknown",
+          endpoint: 'unknown',
           latencyMs: Date.now() - t0,
           success: false,
           error: errorMsg,
@@ -237,7 +237,7 @@ export class TransactionQueue {
   ): Promise<{ txHash: string; endpoint: string }> {
     const result = await rpcCall<{ hash: string }>(
       this.network,
-      "sendTransaction",
+      'sendTransaction',
       [{
         contractId: transaction.contractId,
         method: transaction.method,
@@ -261,10 +261,10 @@ export class TransactionQueue {
   getQueueStatus() {
     return {
       size: this.queue.length,
-      pending:   this.queue.filter((tx) => tx.status === "pending").length,
-      submitted: this.queue.filter((tx) => tx.status === "submitted").length,
-      confirmed: this.queue.filter((tx) => tx.status === "confirmed").length,
-      failed:    this.queue.filter((tx) => tx.status === "failed").length,
+      pending:   this.queue.filter((tx) => tx.status === 'pending').length,
+      submitted: this.queue.filter((tx) => tx.status === 'submitted').length,
+      confirmed: this.queue.filter((tx) => tx.status === 'confirmed').length,
+      failed:    this.queue.filter((tx) => tx.status === 'failed').length,
     };
   }
 
@@ -282,7 +282,7 @@ const queues = new Map<string, TransactionQueue>();
 
 export function getTransactionQueue(
   accountId: string,
-  network: NetworkName = "mainnet",
+  network: NetworkName = 'mainnet',
 ): TransactionQueue {
   if (!queues.has(accountId)) {
     queues.set(accountId, new TransactionQueue(accountId, network));
