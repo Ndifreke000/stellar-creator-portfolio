@@ -59,7 +59,13 @@ function loadSentry(): Promise<SentryLike | null> {
 class ErrorTracker {
   private sessionId: string;
   private isInitialized = false;
-  private enableTracking = true;
+  /**
+   * Read on every use rather than cached at initialize(), so errors captured
+   * before initialisation still honour the opt-out.
+   */
+  private get enableTracking(): boolean {
+    return process.env.NEXT_PUBLIC_ENABLE_ERROR_TRACKING !== 'false';
+  }
 
   constructor() {
     this.sessionId = this.generateSessionId();
@@ -70,8 +76,6 @@ class ErrorTracker {
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
-
-    this.enableTracking = process.env.NEXT_PUBLIC_ENABLE_ERROR_TRACKING !== 'false';
 
     if (!this.enableTracking) {
       console.log('[ErrorTracker] Error tracking disabled');
