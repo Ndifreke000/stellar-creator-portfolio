@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { allowedTypes, slugify, validateFile } from "../app/api/upload/route";
+import { allowedTypes, slugify, validateFile } from "@/lib/storage/upload-validation";
 
 const makeStubFile = (name: string, sizeBytes: number, type: string) =>
   ({ name, size: sizeBytes, type } as unknown as File);
