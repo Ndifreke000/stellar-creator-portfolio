@@ -488,13 +488,12 @@ model Escrow {
 
 model Balance {
   id        String   @id @default(cuid())
-  userId    String
+  /// One balance row per user; escrow release/refund upserts on this key.
+  userId    String   @unique
   available Int      @default(0)
   locked    Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([userId])
 }
 
 model Transaction {
