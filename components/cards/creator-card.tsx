@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { buildOptimizationProps, buildSizes } from '@/lib/utils/image-utils';
 import { VerificationBadge, BadgeRow } from '@/components/widgets/verification-badge';
-import { useOptionalComparison } from '@/components/ComparisonContext';
+import { useOptionalComparison } from '@/components/compare/comparison-context';
 
 interface CreatorCardProps {
   creator: Creator;

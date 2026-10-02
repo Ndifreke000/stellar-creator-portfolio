@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getAvatarInitials } from '@/lib/utils';
-import { useComparison } from '@/components/ComparisonContext';
+import { useComparison } from '@/components/compare/comparison-context';
 
 export function ComparisonBar() {
   const router = useRouter();
