@@ -4,7 +4,7 @@ import { getToken } from 'next-auth/jwt';
 const ONBOARDING_PATH = '/onboarding';
 const PROTECTED_PREFIXES = ['/dashboard', '/profile', '/onboarding'];
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const token = await getToken({
