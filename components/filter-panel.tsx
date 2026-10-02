@@ -264,7 +264,7 @@ export function FilterPanel({
                         {group.options.map((option) => {
                           const isSelected =
                             Array.isArray(group.selected) &&
-                            group.selected.includes(option.id);
+                            (group.selected as string[]).includes(option.id);
                           const checkId = `${uid}-filter-${group.id}-${option.id}`;
                           return (
                             <div key={option.id} className="flex items-center gap-2">
