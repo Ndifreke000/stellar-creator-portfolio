@@ -18,23 +18,24 @@ backend/
 │   ├── referral/          # Referral program contract
 │   ├── stellar_insights/  # Analytics/insights contract
 │   └── test-utils/        # Shared test helpers
-├── services/              # Rust backend services + a few loose TS files
+├── services/              # Rust backend services
 │   ├── api/               # REST API service
 │   ├── auth/               # Authentication service
 │   ├── common/             # Shared service code
 │   ├── discovery/          # Service discovery
 │   ├── indexer/            # Blockchain event indexer
-│   ├── notifications/      # Email & push notification service
-│   └── *.ts                # bounty.service.ts, kms.ts, tracing.ts, etc. —
-│                            # TypeScript helpers colocated with the Rust services
+│   └── notifications/      # Email & push notification service
 ├── limit/                  # API rate-limiting middleware (see backend/limit/README.md)
 ├── migrations/              # SQL migrations
 ├── grafana/                 # Grafana dashboards/provisioning
-├── src/                     # Shared Rust source
 ├── tests/                   # Integration tests
 ├── docker-compose.yml       # Local Postgres/PgBouncer stack
 └── Cargo.toml               # Workspace configuration
 ```
+
+The Next.js app's own server-side TypeScript (tRPC router, GraphQL, audit log,
+KMS, tracing, push notifications) lives in the repository-root `server/`
+directory, not here.
 
 Only 6 of the 11 contracts are currently built, tested, and deployed by CI
 (`.github/workflows/deploy-contracts.yml`): `bounty`, `escrow`,
