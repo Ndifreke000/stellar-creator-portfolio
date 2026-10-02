@@ -33,6 +33,20 @@ export function SearchBar({
   const [isLoading, setIsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
+  const fetchSuggestions = useCallback(async (searchQuery: string) => {
+    try {
+      setIsLoading(true);
+      // No suggestions endpoint exists yet, so this resolves with none.
+      // When /api/search/suggestions lands, fetch it here and hand the
+      // result to setSuggestions.
+      void searchQuery;
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -49,21 +63,7 @@ export function SearchBar({
     }, debounceMs);
 
     return () => clearTimeout(timer);
-  }, [query, debounceMs, onSearchChange, showSuggestions]);
-
-  const fetchSuggestions = useCallback(async (searchQuery: string) => {
-    try {
-      setIsLoading(true);
-      // No suggestions endpoint exists yet, so this resolves with none.
-      // When /api/search/suggestions lands, fetch it here and hand the
-      // result to setSuggestions.
-      void searchQuery;
-    } catch (error) {
-      console.error('Error fetching suggestions:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  }, [query, debounceMs, onSearchChange, showSuggestions, fetchSuggestions]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
