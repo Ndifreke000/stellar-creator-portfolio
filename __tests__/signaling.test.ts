@@ -15,7 +15,7 @@
  *  - Credential expiry timestamp is in the future
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { createHmac } from 'crypto';
 
 // ── TURN credential utilities (extracted from server/realtime/signaling.ts) ────────────

@@ -1,10 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { getDownloadUrl, listFiles, uploadObject } from '../lib/storage';
 import {
-  GetObjectCommand,
   ListObjectsV2Command,
-  PutObjectCommand,
-  S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 

@@ -15,7 +15,7 @@ import {
   calculateRetryDelay,
   DEFAULT_RETRY_CONFIG,
 } from '@/server/services/notifications/notification-validators';
-import { NotificationChannel, UserPreferences } from '@/server/services/notifications/notification-types';
+import { NotificationChannel } from '@/server/services/notifications/notification-types';
 
 describe('PushNotificationService', () => {
   let service: PushNotificationService;

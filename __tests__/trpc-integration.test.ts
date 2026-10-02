@@ -56,7 +56,6 @@ vi.mock('@/server/services/audit', async (importOriginal) => ({
 
 import jwt from 'jsonwebtoken';
 import { createContext } from '@/server/api/trpc';
-import type { AppRouter } from '@/server/api/router';
 import { prisma } from '@/lib/prisma';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

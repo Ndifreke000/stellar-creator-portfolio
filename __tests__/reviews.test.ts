@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 
 // We test the pure logic functions directly - no module mocking needed
 // Import after resetting module state via a fresh import each test suite

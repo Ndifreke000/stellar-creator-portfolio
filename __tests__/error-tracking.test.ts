@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { errorTracker, type ErrorReport } from '@/lib/error-tracking';
+import { errorTracker } from '@/lib/error-tracking';
 
 describe('Error Tracking', () => {
   beforeEach(() => {
