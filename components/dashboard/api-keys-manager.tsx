@@ -12,8 +12,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Skeleton } from "@/components/ui/skeleton";
 import { trackEvent } from "@/lib/analytics/analytics";
 import { formatDate } from "@/lib/utils";
+
+/** Placeholder shown while the key list loads; mirrors the two sections below. */
+function ApiKeysSkeleton() {
+  return (
+    <div className="space-y-8" aria-busy="true" aria-label="Loading API keys">
+      <div className="rounded-lg border p-6 space-y-4">
+        <Skeleton className="h-6 w-40" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+      <div className="rounded-lg border p-6 space-y-3">
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
+      </div>
+    </div>
+  );
+}
 
 interface ApiKeyRecord {
   id: string;
