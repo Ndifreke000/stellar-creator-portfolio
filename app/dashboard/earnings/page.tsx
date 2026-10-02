@@ -1,6 +1,6 @@
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
-import { EarningsDashboard } from '@/components/earnings-dashboard'
+import { EarningsDashboard } from '@/components/analytics/earnings-dashboard'
 
 export const metadata = {
   title: 'Earnings | Tamgora',

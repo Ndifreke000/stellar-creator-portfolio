@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Suspense } from "react";
-import { LeaderboardClient, type CreatorLeaderboardItem } from "@/components/leaderboard-client";
+import { LeaderboardClient, type CreatorLeaderboardItem } from "@/components/analytics/leaderboard-client";
 import { getServerSession } from "next-auth/next";
 
 export const dynamic = 'force-dynamic';

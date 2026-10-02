@@ -7,7 +7,7 @@ import { SocialShare } from '@/components/common/social-share'
 
 // Dynamic import keeps Yjs/Worker APIs out of the SSR bundle
 const AnalyticsDashboardReal = dynamic(
-  () => import('@/components/analytics-dashboard-real').then((m) => m.AnalyticsDashboard),
+  () => import('@/components/analytics/analytics-dashboard').then((m) => m.AnalyticsDashboard),
   { ssr: false, loading: () => <div className="h-64 animate-pulse rounded-md bg-muted" /> },
 )
 
