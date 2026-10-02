@@ -39,7 +39,7 @@ interface FilteredReputationPayload {
 function StarRow({ value, max = 5 }: { value: number; max?: number }) {
   const rounded = Math.round(value);
   return (
-    <div className="flex gap-0.5" aria-label={`${value.toFixed(2)} out of ${max} stars`}>
+    <div className="flex gap-0.5" role="img" aria-label={`${value.toFixed(2)} out of ${max} stars`}>
       {Array.from({ length: max }, (_, i) => (
         <Star
           key={i}
@@ -71,7 +71,7 @@ function Histogram({
   ];
 
   return (
-    <div className="space-y-2 mt-6" aria-label="Rating breakdown">
+    <div className="space-y-2 mt-6" role="group" aria-label="Rating distribution">
       <p className="text-sm font-semibold text-foreground">{title}</p>
       {rows.map((row) => {
         const pct = Math.round((row.count / total) * 100);
