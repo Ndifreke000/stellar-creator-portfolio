@@ -20,13 +20,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: "20"
+          cache: pnpm
 
       - name: Install root dependencies
-        run: npm ci --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       # ── npm scan ────────────────────────────────────────────────────────────
       - name: Snyk — npm dependencies
