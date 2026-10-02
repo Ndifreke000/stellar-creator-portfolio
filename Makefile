@@ -8,10 +8,10 @@ help:
 	@echo "  make check-all      - Run all project lints and tests"
 	@echo "  make check-backend   - Run Clippy and tests for backend services"
 	@echo "  make check-contracts - Run tests for Soroban smart contracts"
-	@echo "  make check-frontend  - Run linting and build for the Next.js frontend"
+	@echo "  make check-frontend  - Run lint, typecheck, tests and build for the Next.js frontend"
 	@echo "  make lint-be         - Run cargo clippy on backend"
 	@echo "  make test-be        - Run cargo tests on backend"
-	@echo "  make lint-fe        - Run next lint on frontend"
+	@echo "  make lint-fe        - Run lint, typecheck and unit tests on frontend"
 
 check-all: check-frontend check-backend check-contracts
 
@@ -23,7 +23,7 @@ check-contracts:
 
 check-frontend: lint-fe
 	@echo "Checking frontend build..."
-	npm run build
+	pnpm run build
 
 lint-be:
 	@echo "Running clippy on backend..."
@@ -35,4 +35,6 @@ test-be:
 
 lint-fe:
 	@echo "Running frontend lint..."
-	npm run lint
+	pnpm run lint
+	pnpm run typecheck
+	pnpm test
