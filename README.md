@@ -45,19 +45,41 @@ Network passphrase: `Test SDF Network ; September 2015`
 ## Project Structure
 
 ```
-├── app/              # Next.js 15 App Router pages & API routes
-├── components/       # React UI components
-├── lib/              # Utilities, clients, services
+├── app/              # Next.js App Router: pages and API routes only
+├── components/       # React components, grouped by feature
+│   ├── ui/           #   shadcn/ui primitives
+│   ├── layout/       #   header, footer, sidebars, layout provider
+│   ├── providers/    #   app-wide context providers (tRPC, session, i18n, motion)
+│   └── <feature>/    #   bounties, reviews, payments, wallet, analytics, ...
+├── hooks/            # React hooks
+├── lib/              # Framework-agnostic helpers, clients and data access
+│   ├── db/           #   Prisma + Supabase clients, locking, transactions
+│   ├── payments/     #   Stripe, escrow state machine, payment validation
+│   ├── storage/      #   S3 object storage, Redis, upload validation
+│   └── utils/        #   formatting, validation, class-name helpers
+├── server/           # Server-only TypeScript used by the API routes
+│   ├── api/          #   tRPC router, context, rate limiting
+│   ├── graphql/      #   GraphQL schema, resolvers, context
+│   ├── services/     #   audit log, events, KMS, tracing, notifications
+│   ├── stellar/      #   Stellar RPC client, contract calls, Soroban indexer
+│   └── realtime/     #   standalone websocket servers (collab, signalling)
 ├── prisma/           # Database schema & migrations
-├── contracts/
-│   ├── escrow/       # Payment escrow with milestone releases
-│   ├── vault/        # Multi-vault batch withdrawal
-│   ├── amm/          # Constant-product AMM (x*y=k)
-│   ├── analytics/    # On-chain event analytics
-│   └── core/         # Dispute arbitration, storage TTL, simulation
-├── backend/          # Rust API services
-│   └── contracts/    # Canonical Soroban contracts (see note below)
-├── mobile/           # React Native app (Expo)
+├── __tests__/        # Vitest suites (others sit beside the code they test)
+├── e2e/              # Playwright specs
+├── contracts/        # Legacy Soroban contracts (see note below)
+│   ├── escrow/       #   Payment escrow with milestone releases
+│   ├── vault/        #   Multi-vault batch withdrawal
+│   ├── amm/          #   Constant-product AMM (x*y=k)
+│   ├── analytics/    #   On-chain event analytics
+│   └── core/         #   Dispute arbitration, storage TTL, simulation
+├── backend/          # Rust workspace: API services
+│   └── contracts/    #   Canonical Soroban contracts (see note below)
+├── mobile/           # React Native app (Expo), with its own toolchain
+├── infrastructure/   # Kubernetes, monitoring and AWS configuration
+├── helm/             # Helm charts
+├── load-tests/       # k6 scenarios
+├── scripts/          # Build, deploy and setup scripts
+├── docs/             # Backlog, implementation and maintenance notes
 └── .husky/           # Git hooks (TS check, secret scan, size limit)
 ```
 
