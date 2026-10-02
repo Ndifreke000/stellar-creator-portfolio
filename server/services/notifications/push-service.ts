@@ -4,7 +4,7 @@
  * Includes queue management, rate limiting, and delivery tracking
  */
 
-import type { Notification, NotificationTemplate, UserPreferences, NotificationChannel } from './notification-types';
+import type { Notification, UserPreferences, NotificationChannel } from './notification-types';
 
 interface PushProvider {
   send(data: PushPayload): Promise<PushResponse>;

@@ -9,9 +9,8 @@
  * - Graceful failover when a specific endpoint returns transient errors
  */
 
-import { prisma } from '@/lib/prisma';
 import { getSequenceManager } from './sequence-manager';
-import { rpcCall, getPoolHealth, startProbing, type RpcCallResult } from '@/lib/config/rpc-fallback';
+import { rpcCall, getPoolHealth, startProbing } from '@/lib/config/rpc-fallback';
 import type { NetworkName } from '@/lib/config/network';
 
 // ---------------------------------------------------------------------------

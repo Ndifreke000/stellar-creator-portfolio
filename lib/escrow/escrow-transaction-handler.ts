@@ -11,7 +11,6 @@ import { prisma } from '@/lib/prisma';
 import {
   executeTransaction,
   IsolationLevel,
-  TransactionOptions,
   deadlockDetector,
 } from '@/lib/db/transaction-manager';
 import { acquireLocksInOrder, LockMode } from '@/lib/db/pessimistic-lock';
