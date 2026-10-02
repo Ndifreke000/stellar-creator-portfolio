@@ -333,6 +333,9 @@ importers:
       '@types/react-dom':
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.14)
+      '@types/ws':
+        specifier: ^8.18.2
+        version: 8.18.2
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.60.1
         version: 8.66.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.7.3))(eslint@9.39.5(jiti@2.7.0))(typescript@5.7.3)
@@ -3683,6 +3686,9 @@ packages:
 
   '@types/use-sync-external-store@0.0.6':
     resolution: {integrity: sha512-zFDAD+tlpf2r4asuHEj0XH6pY6i0g5NeAHPn+15wk3BV6JA69eERFXC1gyGThDkVa1zCyKr5jox1+2LbV/AMLg==}
+
+  '@types/ws@8.18.2':
+    resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
 
   '@types/yauzl@2.10.3':
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
@@ -11227,6 +11233,10 @@ snapshots:
     optional: true
 
   '@types/use-sync-external-store@0.0.6': {}
+
+  '@types/ws@8.18.2':
+    dependencies:
+      '@types/node': 22.20.1
 
   '@types/yauzl@2.10.3':
     dependencies:
