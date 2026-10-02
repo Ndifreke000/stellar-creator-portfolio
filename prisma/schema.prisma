@@ -502,6 +502,8 @@ model Transaction {
   escrowId  String?
   type      String
   amount    Int
+  /// pending | completed | failed
+  status    String   @default("completed")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
