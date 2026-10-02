@@ -40,7 +40,7 @@ describe('buildGatewayUrl', () => {
     const url = buildGatewayUrl(cid, 0);
     // The URL must end with the CID, not contain a double-slash before it
     expect(url.endsWith(cid)).toBe(true);
-    expect(url).not.toMatch(/\/\//);
+    expect(url.replace(/^https?:\/\//, '')).not.toContain('//');
   });
 
   it('selects alternate gateways by index', () => {
