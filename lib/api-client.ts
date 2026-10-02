@@ -17,6 +17,10 @@ import {
   type Bounty,
   type Creator,
   type CreatorReputationPayload,
+  type FilteredCreatorReputationPayload,
+  type PaginatedReviews,
+  type ReputationAggregation,
+  type ReviewFilterOptions,
   type PaginatedData,
   type ReviewSubmission,
   type EscrowTransactionRequest,
@@ -219,32 +223,8 @@ export async function fetchCreatorReputationBatch(
 /** GET /api/v1/creators/:id/reviews - Enhanced with filtering support */
 export async function fetchCreatorReviews(
   id: string,
-  filters?: {
-    minRating?: number;
-    maxRating?: number;
-    dateFrom?: string;
-    dateTo?: string;
-    verifiedOnly?: boolean;
-    sortBy?: "createdAt" | "rating" | "reviewerName";
-    sortOrder?: "asc" | "desc";
-    page?: number;
-    limit?: number;
-  },
-): Promise<{
-  creatorId: string;
-  aggregation: ReputationAggregation;
-  filteredAggregation?: ReputationAggregation;
-  reviews: {
-    reviews: PublicReview[];
-    totalCount: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-  };
-  appliedFilters: any;
-}> {
+  filters?: ReviewFilterOptions,
+): Promise<FilteredCreatorReputationPayload> {
   const params = new URLSearchParams();
   if (filters) {
     Object.entries(filters).forEach(([key, value]) => {
@@ -258,29 +238,11 @@ export async function fetchCreatorReviews(
 }
 
 /** GET /api/v1/reviews - List all reviews with filtering */
-export async function fetchAllReviews(filters?: {
-  minRating?: number;
-  maxRating?: number;
-  dateFrom?: string;
-  dateTo?: string;
-  verifiedOnly?: boolean;
-  sortBy?: "createdAt" | "rating" | "reviewerName";
-  sortOrder?: "asc" | "desc";
-  page?: number;
-  limit?: number;
-}): Promise<{
-  reviews: {
-    reviews: PublicReview[];
-    totalCount: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-  };
+export async function fetchAllReviews(filters?: ReviewFilterOptions): Promise<{
+  reviews: PaginatedReviews;
   overallAggregation: ReputationAggregation;
   filteredAggregation?: ReputationAggregation;
-  appliedFilters: any;
+  appliedFilters: ReviewFilterOptions;
 }> {
   const params = new URLSearchParams();
   if (filters) {
