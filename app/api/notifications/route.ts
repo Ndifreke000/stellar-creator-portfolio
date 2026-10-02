@@ -45,43 +45,38 @@ export async function GET(request: Request) {
   const offset = parseInt(searchParams.get('offset') ?? '0', 10);
   const filter = searchParams.get('filter') ?? 'all';
 
-  const [notifications, total] = await Promise.all([
+  const where = {
+    userId: session.user.id,
+    ...(filter === 'unread' ? { read: false } : filter === 'read' ? { read: true } : {}),
+  };
+
+  const [notifications, total, unreadCount] = await Promise.all([
     prisma.inAppNotification.findMany({
-      where: { userId: session.user.id },
+      where,
       orderBy: { createdAt: 'desc' },
       take: limit,
       skip: offset,
     }),
+    prisma.inAppNotification.count({ where }),
     prisma.inAppNotification.count({
-      where: { userId: session.user.id },
+      where: { userId: session.user.id, read: false },
     }),
   ]);
 
-  // Map to the format expected by the mobile activity feed
-  const items = notifications.map((n) => ({
+  const items: NotificationItem[] = notifications.map((n) => ({
     id: n.id,
-    type: n.bountyId ? 'bounty_created' : n.applicationId ? 'bounty_applied' : 'message_received',
     title: n.title,
     body: n.body,
     read: n.read,
-    bountyId: n.bountyId ?? undefined,
-    applicationId: n.applicationId ?? undefined,
+    applicationId: n.applicationId,
+    bountyId: n.bountyId,
     createdAt: n.createdAt.toISOString(),
   }));
 
-  return NextResponse.json({
-    success: true,
-    data: {
-      items,
-      pagination: {
-        page: Math.floor(offset / limit) + 1,
-        limit,
-        total,
-        hasMore: offset + limit < total,
-      },
-    },
+  const response: NotificationsResponse = {
     notifications: items,
     total,
+    unreadCount,
     limit,
     offset,
     hasMore: offset + notifications.length < total,
