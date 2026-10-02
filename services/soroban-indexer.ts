@@ -5,7 +5,7 @@
  * wallet confirmation, parsing gas estimates and surfacing failures early.
  */
 
-import StellarSdk from "stellar-sdk";
+import * as StellarSdk from "@stellar/stellar-sdk";
 import { getNetworkConfig } from "@/lib/config/network";
 import { rpcCall, startProbing } from "@/lib/config/rpc-fallback";
 
@@ -68,8 +68,8 @@ export async function simulateContractCall(
 function buildTransactionEnvelope(params: SimulateParams): string {
   const { network: networkName } = getNetworkConfig();
   const network = networkName === "mainnet"
-    ? StellarSdk.Networks.PUBLIC_NETWORK_PASSPHRASE
-    : StellarSdk.Networks.TESTNET_NETWORK_PASSPHRASE;
+    ? StellarSdk.Networks.PUBLIC
+    : StellarSdk.Networks.TESTNET;
 
   // Build a contract invocation operation
   const sourceAccount = new StellarSdk.Account(params.sourceAccount, "0");
