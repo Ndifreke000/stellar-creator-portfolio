@@ -12,7 +12,7 @@ interface ChartWrapperProps {
   id?: string;
   className?: string;
   config: ChartConfig;
-  children: React.ReactNode;
+  children: React.ComponentProps<typeof ChartContainer>['children'];
 }
 
 export function ChartWrapper({
