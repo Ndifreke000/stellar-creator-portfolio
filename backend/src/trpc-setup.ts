@@ -25,6 +25,7 @@ import {
   RateLimitExceededError,
 } from '@/backend/src/rateLimit';
 import jwt from 'jsonwebtoken';
+import { getJwtSecret } from './jwt-secret';
 
 // ─── Context Creation ─────────────────────────────────────────────────────────
 
@@ -51,8 +52,7 @@ export async function createContext(req: NextRequest): Promise<Context> {
   if (authorization?.startsWith('Bearer ')) {
     const token = authorization.slice(7);
     try {
-      const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key';
-      const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload & { userId: string };
+      const decoded = jwt.verify(token, getJwtSecret()) as jwt.JwtPayload & { userId: string };
       
       // Fetch user from database
       const dbUser = await prisma.user.findUnique({

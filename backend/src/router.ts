@@ -5,6 +5,7 @@ import { writeAuditLog } from '@/backend/services/audit';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { creatorCardSelect, toCreator } from './creator-mapper';
+import { getJwtSecret } from './jwt-secret';
 import jwt from 'jsonwebtoken';
 import { TRPCError } from '@trpc/server';
 import { sanitizeRichText, hasRichTextContent } from '@/lib/rich-text/sanitize';
@@ -548,7 +549,6 @@ export const appRouter = router({
         });
 
         // Issue a short-lived JWT with ZK verification claim
-        const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key';
         const token = jwt.sign(
           {
             zk_verified: true,
@@ -556,7 +556,7 @@ export const appRouter = router({
             iat: Math.floor(Date.now() / 1000),
             exp: Math.floor(Date.now() / 1000) + 86400, // 24 hours
           },
-          JWT_SECRET
+          getJwtSecret()
         );
 
         return {

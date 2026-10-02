@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
+import { getJwtSecret } from '../jwt-secret';
 import { hashApiKey } from '@/lib/api-keys';
 import { checkRateLimit, RateLimitResult } from '@/backend/src/rateLimit';
 
@@ -22,11 +23,7 @@ export async function createGraphQLContext(req: NextRequest): Promise<GraphQLCon
   if (authorization?.startsWith('Bearer ')) {
     const token = authorization.slice(7);
     try {
-      const JWT_SECRET = process.env.JWT_SECRET;
-      if (!JWT_SECRET) {
-        throw new Error('JWT_SECRET environment variable is not set');
-      }
-      const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload & { userId: string };
+      const decoded = jwt.verify(token, getJwtSecret()) as jwt.JwtPayload & { userId: string };
 
       const dbUser = await prisma.user.findUnique({
         where: { id: decoded.userId },
