@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import PWAManager from '@/lib/pwa-utils';
+import PWAManager from '@/lib/pwa/pwa-utils';
 
 /**
  * Integration Tests for PWA

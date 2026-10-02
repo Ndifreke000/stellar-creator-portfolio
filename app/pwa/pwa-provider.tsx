@@ -2,7 +2,7 @@
 'use client';
 
 import React, { ReactNode, useEffect, useState } from 'react';
-import { pwa } from '@/lib/pwa-utils';
+import { pwa } from '@/lib/pwa/pwa-utils';
 
 interface PWAContextType {
   isOnline: boolean;
