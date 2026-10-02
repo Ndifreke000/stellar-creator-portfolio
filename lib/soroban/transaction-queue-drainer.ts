@@ -270,6 +270,7 @@ async function drainerTick(): Promise<void> {
     const pending = await prisma.transactionQueue.groupBy({
       by: ["accountId"],
       where: { status: "pending" },
+      orderBy: { accountId: "asc" },
       take: BATCH_SIZE,
     });
 
