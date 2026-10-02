@@ -57,7 +57,6 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
               alt={project.title}
               fill
               className="object-cover"
-              sizes={modalSizes}
               {...buildOptimizationProps({ priority: false, sizes: modalSizes })}
               placeholder="empty"
             />
