@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { extractStellarAddress } from '@/mobile/src/components/QRScannerModal';
+import { extractStellarAddress } from '../stellarAddress';
 
-const VALID_ADDRESS = 'GABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy';
+// "G" + 55 base32 characters, the shape of a Stellar public key.
+const VALID_ADDRESS = 'GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H';
 
 describe('extractStellarAddress', () => {
   it('should extract a raw Stellar address', () => {
