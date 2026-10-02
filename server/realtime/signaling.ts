@@ -358,17 +358,17 @@ const httpServer = createServer((req, res) => {
   // Metrics endpoint (Prometheus-compatible)
   if (req.url === '/metrics' && req.method === 'GET') {
     const lines = [
-      `# HELP signaling_connections_active Current WebSocket connections`,
-      `# TYPE signaling_connections_active gauge`,
+      '# HELP signaling_connections_active Current WebSocket connections',
+      '# TYPE signaling_connections_active gauge',
       `signaling_connections_active ${peers.size}`,
-      `# HELP signaling_rooms_active Active rooms`,
-      `# TYPE signaling_rooms_active gauge`,
+      '# HELP signaling_rooms_active Active rooms',
+      '# TYPE signaling_rooms_active gauge',
       `signaling_rooms_active ${rooms.size}`,
-      `# HELP signaling_connections_total Total connections since start`,
-      `# TYPE signaling_connections_total counter`,
+      '# HELP signaling_connections_total Total connections since start',
+      '# TYPE signaling_connections_total counter',
       `signaling_connections_total ${totalConnections}`,
-      `# HELP signaling_messages_relayed_total Total messages relayed`,
-      `# TYPE signaling_messages_relayed_total counter`,
+      '# HELP signaling_messages_relayed_total Total messages relayed',
+      '# TYPE signaling_messages_relayed_total counter',
       `signaling_messages_relayed_total ${totalMessagesRelayed}`,
     ].join('\n');
     res.writeHead(200, { 'Content-Type': 'text/plain; version=0.0.4' });

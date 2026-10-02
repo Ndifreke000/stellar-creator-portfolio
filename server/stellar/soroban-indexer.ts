@@ -5,9 +5,9 @@
  * wallet confirmation, parsing gas estimates and surfacing failures early.
  */
 
-import * as StellarSdk from "@stellar/stellar-sdk";
-import { getNetworkConfig } from "@/lib/config/network";
-import { rpcCall, startProbing } from "@/lib/config/rpc-fallback";
+import * as StellarSdk from '@stellar/stellar-sdk';
+import { getNetworkConfig } from '@/lib/config/network';
+import { rpcCall, startProbing } from '@/lib/config/rpc-fallback';
 
 export interface SimulateParams {
   contractId: string;
@@ -37,7 +37,7 @@ export async function simulateContractCall(
   try {
     const rpcResult = await rpcCall<{ cost?: { cpuInsns?: string }; error?: string }>(
       network,
-      "simulateTransaction",
+      'simulateTransaction',
       { transaction: buildTransactionEnvelope(params) },
     );
     result = { result: rpcResult.data };
@@ -49,7 +49,7 @@ export async function simulateContractCall(
   }
 
   const res = result.result;
-  if (!res) return { success: false, error: "Empty simulation result" };
+  if (!res) return { success: false, error: 'Empty simulation result' };
   if (res.error) return { success: false, error: res.error };
 
   const gasEstimate = res.cost?.cpuInsns
@@ -67,12 +67,12 @@ export async function simulateContractCall(
  */
 function buildTransactionEnvelope(params: SimulateParams): string {
   const { network: networkName } = getNetworkConfig();
-  const network = networkName === "mainnet"
+  const network = networkName === 'mainnet'
     ? StellarSdk.Networks.PUBLIC
     : StellarSdk.Networks.TESTNET;
 
   // Build a contract invocation operation
-  const sourceAccount = new StellarSdk.Account(params.sourceAccount, "0");
+  const sourceAccount = new StellarSdk.Account(params.sourceAccount, '0');
   const txBuilder = new StellarSdk.TransactionBuilder(sourceAccount, {
     fee: StellarSdk.BASE_FEE,
     networkPassphrase: network,
@@ -81,9 +81,9 @@ function buildTransactionEnvelope(params: SimulateParams): string {
 
   // Convert args to Soroban native types
   const scArgs = params.args.map((arg) => {
-    if (typeof arg === "string") return StellarSdk.nativeToScVal(arg);
-    if (typeof arg === "number") return StellarSdk.nativeToScVal(arg);
-    if (typeof arg === "boolean") return StellarSdk.nativeToScVal(arg);
+    if (typeof arg === 'string') return StellarSdk.nativeToScVal(arg);
+    if (typeof arg === 'number') return StellarSdk.nativeToScVal(arg);
+    if (typeof arg === 'boolean') return StellarSdk.nativeToScVal(arg);
     return StellarSdk.nativeToScVal(String(arg)); // fallback: stringify
   });
 

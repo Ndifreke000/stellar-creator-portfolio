@@ -120,7 +120,7 @@ async function azureGetSecret(name: SecretName): Promise<string> {
   const vaultUrl = process.env.AZURE_KEYVAULT_URL;
   if (!vaultUrl) {
     throw new Error(
-      `KMS[azure]: AZURE_KEYVAULT_URL is not set — required when KMS_PROVIDER=azure`,
+      'KMS[azure]: AZURE_KEYVAULT_URL is not set — required when KMS_PROVIDER=azure',
     );
   }
 
@@ -309,7 +309,7 @@ export async function provisionSecret(name: SecretName, value: string): Promise<
   if (provider === 'azure') {
     const vaultUrl = process.env.AZURE_KEYVAULT_URL;
     if (!vaultUrl) {
-      throw new Error(`KMS[azure]: AZURE_KEYVAULT_URL must be set to provision secrets`);
+      throw new Error('KMS[azure]: AZURE_KEYVAULT_URL must be set to provision secrets');
     }
     const { SecretClient, DefaultAzureCredential } = await loadAzureSdk();
 
@@ -328,8 +328,8 @@ export async function provisionSecret(name: SecretName, value: string): Promise<
   }
 
   throw new Error(
-    `KMS[env]: provisionSecret is not supported for the "env" provider — ` +
-      `set the variable directly in your environment or process manager`,
+    'KMS[env]: provisionSecret is not supported for the "env" provider — ' +
+      'set the variable directly in your environment or process manager',
   );
 }
 

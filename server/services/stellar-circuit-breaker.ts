@@ -131,7 +131,7 @@ export class StellarCircuitBreaker {
    */
   async execute<T>(operation: () => Promise<T>): Promise<T> {
     return withSpan(
-      `stellar_rpc.circuit_breaker.execute`,
+      'stellar_rpc.circuit_breaker.execute',
       async (span) => {
         span.setAttribute('circuit_breaker.service', this.serviceName);
         span.setAttribute('circuit_breaker.state', this.state);
