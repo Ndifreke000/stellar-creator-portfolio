@@ -24,7 +24,7 @@ This implementation provides comprehensive, native-rated user rating structures 
 | `mobile/src/components/rating/RatingList.tsx` | Interactive rating list |
 | `mobile/src/components/rating/ReputationCard.tsx` | User reputation display |
 | `mobile/src/components/rating/index.ts` | Component exports index |
-| `mobile/RATING_SYSTEM_SUMMARY.md` | This summary document |
+| `mobile/docs/RATING_SYSTEM_SUMMARY.md` | This summary document |
 
 ---
 

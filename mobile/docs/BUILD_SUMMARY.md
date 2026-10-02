@@ -32,7 +32,7 @@ A full native preference management system for the Tamgora mobile app with:
 - `mobile/src/context/index.ts`
 - `mobile/src/screens/PreferencesScreen.tsx`
 - `mobile/app/(app)/preferences.tsx`
-- `mobile/PREFERENCES_SYSTEM.md`
+- `mobile/docs/PREFERENCES_SYSTEM.md`
 
 ---
 
@@ -72,7 +72,7 @@ Secure, comprehensive push notification workflows with:
 - `mobile/src/components/PushNotification/NotificationCard.tsx`
 - `mobile/src/components/PushNotification/AggregatedNotificationGroup.tsx`
 - `mobile/src/components/PushNotification/NotificationSettingsToggle.tsx`
-- `mobile/PUSH_NOTIFICATION_GUIDE.md`
+- `mobile/docs/PUSH_NOTIFICATION_GUIDE.md`
 
 ---
 

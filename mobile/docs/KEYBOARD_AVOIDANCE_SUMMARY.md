@@ -23,8 +23,8 @@ This implementation addresses keyboard avoidance behavioral anomalies with compr
 | `mobile/src/hooks/useKeyboardAvoidance.ts` | Enhanced keyboard avoidance hook with platform detection |
 | `mobile/src/components/KeyboardAvoidance/KeyboardAvoidingContainer.tsx` | Updated container with safe area handling |
 | `mobile/src/components/KeyboardAvoidance/SmartKeyboardAvoidingContainer.tsx` | Advanced container with behavior options |
-| `mobile/KEYBOARD_AVOIDANCE_GUIDE.md` | Comprehensive integration guide |
-| `mobile/KEYBOARD_AVOIDANCE_SUMMARY.md` | This summary document |
+| `mobile/docs/KEYBOARD_AVOIDANCE_GUIDE.md` | Comprehensive integration guide |
+| `mobile/docs/KEYBOARD_AVOIDANCE_SUMMARY.md` | This summary document |
 
 ### Files Modified
 

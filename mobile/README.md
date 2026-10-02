@@ -220,7 +220,7 @@ subtitling/  telemetry/  theme/  tipping/  types/  upscaling/  utils/
 
 This list will drift again as the app grows — treat `mobile/src/`'s actual
 directory listing as the source of truth over any snapshot committed here.
-`mobile/INFINITE_SCROLLING.md` documents the infinite-scroll/memory-
+`mobile/docs/INFINITE_SCROLLING.md` documents the infinite-scroll/memory-
 optimization subsystem specifically.
 
 ## Installation

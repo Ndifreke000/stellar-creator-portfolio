@@ -34,8 +34,8 @@ This implementation provides comprehensive WebSocket integration for real-time f
 | `mobile/src/types/websocket-interaction.ts` | WebSocket message type definitions |
 | `mobile/src/services/WebSocketConnectionManager.ts` | Centralized WebSocket connection management |
 | `mobile/src/screens/WebSocketDrawingScreen.tsx` | Example implementation screen |
-| `mobile/WEBSOCKET_INTEGRATION.md` | Comprehensive integration guide |
-| `mobile/WEBSOCKET_IMPLEMENTATION_SUMMARY.md` | This summary document |
+| `mobile/docs/WEBSOCKET_INTEGRATION.md` | Comprehensive integration guide |
+| `mobile/docs/WEBSOCKET_IMPLEMENTATION_SUMMARY.md` | This summary document |
 
 ### Files Modified
 
@@ -303,7 +303,7 @@ npx tsc --noEmit
 ## 📖 Documentation
 
 ### Integration Guide
-See `mobile/WEBSOCKET_INTEGRATION.md` for:
+See `mobile/docs/WEBSOCKET_INTEGRATION.md` for:
 - Architecture overview
 - Component usage examples
 - API reference
@@ -311,7 +311,7 @@ See `mobile/WEBSOCKET_INTEGRATION.md` for:
 - Troubleshooting guide
 
 ### Implementation Summary
-See `mobile/WEBSOCKET_IMPLEMENTATION_SUMMARY.md` for:
+See `mobile/docs/WEBSOCKET_IMPLEMENTATION_SUMMARY.md` for:
 - Implementation summary
 - File structure
 - Key components
