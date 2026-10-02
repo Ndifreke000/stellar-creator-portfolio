@@ -1,6 +1,10 @@
 import { z } from 'zod';
-import { protectedProcedure, publicProcedure, router } from './trpc-setup';
+import { protectedProcedure, publicProcedure, rateLimit, router } from './trpc-setup';
+import { emitEvent } from '@/backend/services/events';
+import { writeAuditLog } from '@/backend/services/audit';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+import { creatorCardSelect, toCreator } from './creator-mapper';
 import jwt from 'jsonwebtoken';
 import { TRPCError } from '@trpc/server';
 import { sanitizeRichText, hasRichTextContent } from '@/lib/rich-text/sanitize';
@@ -195,27 +199,12 @@ export const appRouter = router({
       .input(z.object({ limit: z.number().int().positive().max(20).default(3) }))
       .use(rateLimit({ windowMs: 60_000, max: 60 }))
       .query(async ({ input }) => {
-        return await prisma.creator.findMany({
+        const profiles = await prisma.creatorProfile.findMany({
           take: input.limit,
-          select: {
-            id: true,
-            name: true,
-            title: true,
-            discipline: true,
-            bio: true,
-            avatar: true,
-            coverImage: true,
-            tagline: true,
-            linkedIn: true,
-            twitter: true,
-            skills: true,
-            hourlyRate: true,
-            rating: true,
-            reviewCount: true,
-            stats: true,
-          },
+          select: creatorCardSelect,
           orderBy: [{ rating: 'desc' }, { completedProjects: 'desc' }],
         });
+        return profiles.map(toCreator);
       }),
 
     list: publicProcedure
@@ -229,7 +218,7 @@ export const appRouter = router({
       )
       .use(rateLimit({ windowMs: 60_000, max: 60 }))
       .query(async ({ input }) => {
-        const where: any = {};
+        const where: Prisma.CreatorProfileWhereInput = {};
         if (input.discipline) {
           where.discipline = input.discipline;
         }
@@ -244,19 +233,7 @@ export const appRouter = router({
           take: input.take + 1,
           ...(input.cursor && { cursor: { id: input.cursor }, skip: 1 }),
           where,
-          select: {
-            id: true,
-            displayName: true,
-            discipline: true,
-            bio: true,
-            avatar: true,
-            skills: true,
-            rating: true,
-            completedProjects: true,
-            linkedinUrl: true,
-            websiteUrl: true,
-            createdAt: true,
-          },
+          select: creatorCardSelect,
           orderBy: { createdAt: 'desc' },
         });
 
@@ -265,29 +242,7 @@ export const appRouter = router({
 
         const nextCursor = creatorProfiles.length > 0 ? creatorProfiles[creatorProfiles.length - 1].id : null;
 
-        // Map CreatorProfile to Creator interface expected by frontend
-        const creators = creatorProfiles.map((profile: any) => ({
-          id: profile.id,
-          name: profile.displayName,
-          title: profile.discipline || 'Creator',
-          discipline: profile.discipline || 'General',
-          bio: profile.bio || '',
-          avatar: profile.avatar || '/avatars/default.jpg',
-          coverImage: '/covers/default.jpg',
-          tagline: 'Available for projects',
-          linkedIn: profile.linkedinUrl || '',
-          twitter: '',
-          portfolio: profile.websiteUrl || '',
-          skills: profile.skills || [],
-          stats: {
-            projects: profile.completedProjects,
-            clients: Math.floor(Math.random() * 50) + 10,
-            experience: Math.floor(Math.random() * 10) + 1,
-          },
-          hourlyRate: Math.floor(Math.random() * 100) + 50,
-          rating: profile.rating,
-          reviewCount: Math.floor(Math.random() * 50) + 5,
-        }));
+        const creators = creatorProfiles.map(toCreator);
 
         return {
           creators,
@@ -300,16 +255,25 @@ export const appRouter = router({
       .input(z.object({ id: z.string() }))
       .use(rateLimit({ windowMs: 60_000, max: 60 }))
       .query(async ({ input }) => {
-        return await prisma.creator.findUnique({
+        const profile = await prisma.creatorProfile.findUnique({
           where: { id: input.id },
-          include: {
-            projects: true,
-            reviews: {
-              take: 5,
-              orderBy: { createdAt: 'desc' },
-            },
-          },
+          select: { ...creatorCardSelect, userId: true },
         });
+        if (!profile) return null;
+
+        const [projects, reviews] = await Promise.all([
+          prisma.project.findMany({
+            where: { creatorId: profile.userId },
+            orderBy: { createdAt: 'desc' },
+          }),
+          prisma.review.findMany({
+            where: { creatorId: profile.id, status: 'APPROVED' },
+            take: 5,
+            orderBy: { createdAt: 'desc' },
+          }),
+        ]);
+
+        return { ...toCreator(profile), projects, reviews };
       }),
   }),
 
