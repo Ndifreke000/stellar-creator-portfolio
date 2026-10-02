@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
-import { Role } from '@prisma/client';
+import { type Prisma, type Role } from '@prisma/client';
 
 export async function GET() {
   const session = await getServerSession();
@@ -56,7 +56,7 @@ export async function PATCH(req: NextRequest) {
     where: { id: session.user.id },
     data: {
       onboardingStep: step ?? user.onboardingStep,
-      onboardingData: mergedData,
+      onboardingData: mergedData as Prisma.InputJsonObject,
       ...(role ? { role: role as Role } : {}),
     },
     select: {
