@@ -158,11 +158,14 @@ class PWAManager {
   public isRunningAsApp(): boolean {
     if (typeof window === 'undefined') return false;
 
-    return (
-      (window.navigator as any).standalone === true ||
-      window.matchMedia('(display-mode: standalone)').matches ||
-      window.matchMedia('(display-mode: fullscreen)').matches ||
-      window.matchMedia('(display-mode: minimal-ui)').matches
+    // iOS Safari reports installed web apps through navigator.standalone.
+    if ((window.navigator as Navigator & { standalone?: boolean }).standalone === true) {
+      return true;
+    }
+    if (typeof window.matchMedia !== 'function') return false;
+
+    return ['standalone', 'fullscreen', 'minimal-ui'].some(
+      (mode) => window.matchMedia(`(display-mode: ${mode})`).matches,
     );
   }
 
