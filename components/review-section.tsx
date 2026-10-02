@@ -17,15 +17,21 @@ interface Review {
 
 interface ReviewSectionProps {
   creatorId: string;
+  creatorName: string;
+  /** Bounty being reviewed. The review form is only offered when set. */
+  bountyId?: string;
   reviews: Review[];
   averageRating: number;
   totalReviews: number;
   userCanReview?: boolean;
-  onReviewSubmit?: (review: Review) => void;
+  /** Called after a review has been submitted successfully. */
+  onReviewSubmit?: () => void;
 }
 
 export function ReviewSection({
   creatorId,
+  creatorName,
+  bountyId,
   reviews,
   averageRating,
   totalReviews,
@@ -69,12 +75,14 @@ export function ReviewSection({
       </div>
 
       {/* Review Form */}
-      {showReviewForm && (
+      {showReviewForm && bountyId && (
         <ReviewForm
+          bountyId={bountyId}
           creatorId={creatorId}
-          onClose={() => setShowReviewForm(false)}
-          onSubmit={(review) => {
-            onReviewSubmit?.(review);
+          creatorName={creatorName}
+          onCancel={() => setShowReviewForm(false)}
+          onSuccess={() => {
+            onReviewSubmit?.();
             setShowReviewForm(false);
           }}
         />
