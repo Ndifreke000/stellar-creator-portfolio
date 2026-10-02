@@ -167,8 +167,8 @@ export async function POST(request: NextRequest) {
     })
     const charge = captured.latest_charge
     const receiptUrl =
-      typeof charge === 'object' && charge && !charge.deleted && 'receipt_url' in charge
-        ? (charge.receipt_url as string | null) ?? undefined
+      typeof charge === 'object' && charge && 'receipt_url' in charge
+        ? charge.receipt_url ?? undefined
         : undefined
     markReleased(escrow.id, receiptUrl)
 
