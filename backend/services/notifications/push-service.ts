@@ -330,7 +330,9 @@ export class PushNotificationService {
       );
 
       // Small delay between batches to avoid overwhelming providers
-      await this.delay(100);
+      if (i + batchSize < notifications.length) {
+        await this.delay(100);
+      }
     }
 
     return results;
