@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   ConnectWalletButton,
   formatAccount,
-} from '@/components/ui/connect-wallet-button'
+} from '@/components/wallet/connect-wallet-button'
 
 describe('ConnectWalletButton', () => {
   it('renders idle state and calls connect handler', () => {

@@ -17,7 +17,7 @@ vi.mock('@/contexts/WalletContext', () => ({
 }));
 vi.mock('@/components/notifications/notification-center', () => ({ NotificationCenter: () => null }));
 vi.mock('@/components/streaming/deferred-swap-launcher', () => ({ DeferredSwapLauncher: () => null }));
-vi.mock('@/components/connect-wallet-button', () => ({
+vi.mock('@/components/wallet/connect-wallet-button', () => ({
   ConnectWalletButton: () => null,
   formatAccount: (a: string) => a,
 }));
