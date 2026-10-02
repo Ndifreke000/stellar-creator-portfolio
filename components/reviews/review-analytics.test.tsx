@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
-import { ReviewAnalytics } from '@/components/review-analytics';
+import { ReviewAnalytics } from '@/components/reviews/review-analytics';
 import * as apiClient from '@/lib/api-client';
 
 // Mock the API client

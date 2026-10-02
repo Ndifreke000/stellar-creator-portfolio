@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
-import { CreatorReputation } from './creator-reputation';
+import { CreatorReputation } from '@/components/reviews/creator-reputation';
 import { apiSuccess, apiFailure, type FilteredCreatorReputationPayload } from '@/lib/api-models';
 
 describe('Rating Math - UI Component Tests', () => {

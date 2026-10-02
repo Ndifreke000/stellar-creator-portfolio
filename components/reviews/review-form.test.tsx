@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ReviewForm } from '../components/review-form';
-import * as apiClient from '../lib/api-client';
+import { ReviewForm } from '@/components/reviews/review-form';
+import * as apiClient from '@/lib/api-client';
 
 const defaultProps = {
   bountyId: 'b-1',

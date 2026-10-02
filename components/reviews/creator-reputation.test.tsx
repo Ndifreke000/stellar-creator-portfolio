@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { CreatorReputation } from './creator-reputation';
+import { CreatorReputation } from '@/components/reviews/creator-reputation';
 import { apiSuccess, apiFailure } from '@/lib/api-models';
 import type { FilteredCreatorReputationPayload } from '@/lib/api-models';
 

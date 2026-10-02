@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
-import { ReviewFilters, type ReviewFilterOptions } from '@/components/review-filters';
+import { ReviewFilters, type ReviewFilterOptions } from '@/components/reviews/review-filters';
 
 describe('ReviewFilters', () => {
   const mockOnFiltersChange = vi.fn();

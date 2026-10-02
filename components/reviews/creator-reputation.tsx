@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import type { ApiResponse, CreatorReputationPayload, PublicReview, ReputationAggregation } from '@/lib/api-models';
 import { isApiSuccess } from '@/lib/api-models';
-import { ReviewList } from '@/components/review-list';
-import { ReviewFilters, type ReviewFilterOptions } from '@/components/review-filters';
-import { ReviewForm } from '@/components/review-form';
+import { ReviewList } from '@/components/reviews/review-list';
+import { ReviewFilters, type ReviewFilterOptions } from '@/components/reviews/review-filters';
+import { ReviewForm } from '@/components/reviews/review-form';
 import { ErrorAlert } from '@/components/error-alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

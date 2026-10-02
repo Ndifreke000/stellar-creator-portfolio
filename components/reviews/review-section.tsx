@@ -3,7 +3,7 @@
 import { Star, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { ReviewForm } from './review-form';
+import { ReviewForm } from '@/components/reviews/review-form';
 
 interface Review {
   id: string;
