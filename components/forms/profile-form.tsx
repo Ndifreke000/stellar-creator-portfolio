@@ -70,7 +70,7 @@ const defaultValues: ProfileFormValues = {
 };
 
 export function ProfileForm() {
-    const form = useForm<ProfileFormValues>({
+    const form = useForm<z.input<typeof profileFormSchema>, unknown, ProfileFormValues>({
         resolver: zodResolver(profileFormSchema),
         defaultValues,
         mode: 'onChange',
@@ -186,7 +186,7 @@ export function ProfileForm() {
                             <FormItem id="skills">
                                 <FormLabel>Skills</FormLabel>
                                 <FormControl>
-                                    <SkillCombobox value={field.value} onChange={field.onChange} maxItems={10} />
+                                    <SkillCombobox value={field.value ?? []} onChange={field.onChange} maxItems={10} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -59,7 +60,7 @@ export function DisputeForm({
     setValue,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<FormValues>({
+  } = useForm<z.input<typeof disputeFormInputSchema>, unknown, FormValues>({
     resolver: zodResolver(disputeFormInputSchema),
     defaultValues: {
       title: '',
